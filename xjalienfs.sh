@@ -19,7 +19,7 @@ mkdir -p ${INSTALLROOT}/lib
 
 #sed -i".bak" 's/#!.*python.*/#!\/usr\/bin\/env python3/' ${INSTALLROOT}/bin/*
 #rm -v ${INSTALLROOT}/bin/*.bak
-rm -v ${INSTALLROOT}/bin/*
+rm -vf ${INSTALLROOT}/bin/*
 
  # Uniform Python library path
 pushd ${INSTALLROOT}
