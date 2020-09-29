@@ -14,8 +14,12 @@ requires:
 # env PYTHONUSERBASE="$INSTALLROOT" pip3 install --user -r alibuild_requirements.txt
 env PYTHONUSERBASE="$INSTALLROOT" ALIBUILD=1 python3 -m pip install file://${SOURCEDIR}
 
-sed -i".bak" 's/#!.*python.*/#!\/usr\/bin\/env python3/' ${INSTALLROOT}/bin/*
-rm -v ${INSTALLROOT}/bin/*.bak
+mkdir -p ${INSTALLROOT}/bin
+mkdir -p ${INSTALLROOT}/lib
+
+#sed -i".bak" 's/#!.*python.*/#!\/usr\/bin\/env python3/' ${INSTALLROOT}/bin/*
+#rm -v ${INSTALLROOT}/bin/*.bak
+rm -v ${INSTALLROOT}/bin/*
 
  # Uniform Python library path
 pushd ${INSTALLROOT}
