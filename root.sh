@@ -146,6 +146,7 @@ cmake $SOURCEDIR                                                                
       -Dshadowpw=OFF                                                                   \
       -Dvdt=ON                                                                         \
       -Dbuiltin_vdt=ON                                                                 \
+      -Dbuiltin_glew=ON                                                                \
       ${ALIEN_RUNTIME_REVISION:+-Dmonalisa=ON}                                         \
       -Dkrb5=OFF                                                                       \
       -Dgviz=OFF                                                                       \
