@@ -1,11 +1,10 @@
 package: JAliEn-ROOT
 version: "%(tag_basename)s"
-tag: "0.5.5"
+tag: "0.6.2"
 source: https://gitlab.cern.ch/jalien/jalien-root.git
 requires:
   - ROOT
   - xjalienfs
-  - libjalienws
   - XRootD
 build_requires:
   - libwebsockets
