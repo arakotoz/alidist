@@ -1,6 +1,6 @@
 package: xjalienfs
 version: "%(tag_basename)s"
-tag: "1.2.5"
+tag: "1.2.7"
 source: https://gitlab.cern.ch/jalien/xjalienfs.git
 requires:
  - "OpenSSL:(?!osx)"
@@ -12,7 +12,7 @@ requires:
 #!/bin/bash -e
 
 # env PYTHONUSERBASE="$INSTALLROOT" pip3 install --user -r alibuild_requirements.txt
-env PYTHONUSERBASE="$INSTALLROOT" ALIBUILD=1 python3 -m pip install file://${SOURCEDIR}
+env PYTHONUSERBASE="$INSTALLROOT" ALIBUILD=1 python3 -m pip install --ignore-installed --user file://${SOURCEDIR}
 
 mkdir -p ${INSTALLROOT}/bin
 mkdir -p ${INSTALLROOT}/lib
