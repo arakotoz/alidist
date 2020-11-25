@@ -11,8 +11,7 @@ requires:
 ---
 #!/bin/bash -e
 
-# env PYTHONUSERBASE="$INSTALLROOT" pip3 install --user -r alibuild_requirements.txt
-env PYTHONUSERBASE="$INSTALLROOT" ALIBUILD=1 python3 -m pip install --ignore-installed --user file://${SOURCEDIR}
+env PYTHONUSERBASE="$INSTALLROOT" ALIBUILD=1 python3 -m pip install --ignore-installed file://${SOURCEDIR}
 
 mkdir -p ${INSTALLROOT}/bin
 mkdir -p ${INSTALLROOT}/lib
