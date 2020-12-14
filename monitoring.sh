@@ -4,7 +4,7 @@ tag: v3.4.0
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"
-  - ApMon-CPP
+  - "ApMon-CPP:(?!osx)"
   - "system-curl:(slc8)"
   - "curl:(?!slc8)"
 build_requires:
@@ -36,7 +36,7 @@ cp ${BUILDDIR}/compile_commands.json ${INSTALLROOT}
 make ${JOBS+-j $JOBS} install
 
 if [[ $ALIBUILD_O2_TESTS ]]; then
-  make test
+  ctest --output-on-failure
 fi
 
 
