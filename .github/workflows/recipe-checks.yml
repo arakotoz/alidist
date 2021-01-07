@@ -16,17 +16,21 @@ jobs:
     - uses: actions/checkout@v2
       with:
         ref: ${{ github.event.pull_request.head.sha }}
+        fetch-depth: 0
     - name: Run check
       # Runs bash -eo pipefail
       shell: bash
       run: |
+        set -x
         aliBuild analytics off
         err_fnames=()
 
         git diff --name-only "$(git merge-base HEAD ${{ github.event.pull_request.base.sha }})" |
-          grep '\.sh$' |
           while read -r fname; do
-            [ -e "$fname" ] || continue
+            case "$fname" in
+              *.sh) [ -e "$fname" ] || continue;;
+              *) continue;;
+            esac
             echo "Linting $fname"
             if ! scripts/lint-recipes "$fname" ||
                # This should really be cleaned up, since macOS cleans any
@@ -49,7 +53,8 @@ jobs:
               echo "ERROR: recipe $fname has no modulefile"
               err_fnames+=("$fname")
             fi
-            aliBuild deps --defaults o2 "${fname%.sh}" --outgraph deps.pdf --no-system --neat -c . 2>&1 |
+            aliBuild deps --defaults o2 --outgraph /dev/null --no-system --neat -c . \
+                     "$(awk '/^package: /{print $2}' "$fname")" 2>&1 |
               if grep -q 'transitive reduction not unique'; then
                 echo "ERROR: recipe $fname has circular dependency"
                 err_fnames+=("$fname")
