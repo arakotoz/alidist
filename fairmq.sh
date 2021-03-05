@@ -1,6 +1,6 @@
 package: FairMQ
 version: "%(tag_basename)s"
-tag: v1.4.28
+tag: v1.4.32
 source: https://github.com/FairRootGroup/FairMQ
 requires:
  - boost
@@ -8,8 +8,8 @@ requires:
  - ZeroMQ
  - "DDS:(?!osx)"
  - asiofi
- - flatbuffers
 build_requires:
+ - flatbuffers
  - CMake
  - "GCC-Toolchain:(?!osx)"
  - googletest

@@ -1,5 +1,5 @@
 package: DDS
-version: "3.5.3"
+version: "3.5.6"
 source: https://github.com/FairRootGroup/DDS
 requires:
   - boost
@@ -39,7 +39,7 @@ esac
 
 make -j$JOBS install
 
-find "$INSTALLROOT/lib" -name "libboost_*" -delete
+find $INSTALLROOT -path "*/lib/libboost_*" -o -path "*/lib64/libboost_*" -delete
 rm -f "$INSTALLROOT/LICENSE"
 
 # ModuleFile

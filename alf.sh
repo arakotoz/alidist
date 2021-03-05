@@ -1,14 +1,14 @@
 package: ALF
 version: "%(tag_basename)s"
-tag: v0.10.0
+tag: v0.13.0
 requires:
   - boost
   - Common-O2
   - "dim:(?!osx)"
   - "GCC-Toolchain:(?!osx)"
-  - libInfoLogger
   - LLA
   - ReadoutCard
+  - "DimRpcParallel:(?!osx)"
 build_requires:
   - alibuild-recipe-tools
   - CMake
@@ -29,9 +29,9 @@ cmake $SOURCEDIR                                                      \
       ${BOOST_REVISION:+-DBOOST_ROOT=$BOOST_ROOT}                      \
       ${COMMON_O2_REVISION:+-DCommon_ROOT=$COMMON_O2_ROOT}             \
       ${DIM_REVISION:+-DDIM_ROOT=$DIM_ROOT}                            \
-      ${LIBINFOLOGGER_REVISION:+-DInfoLogger_ROOT=$LIBINFOLOGGER_ROOT} \
       ${READOUTCARD_REVISION:+-DReadoutCard_ROOT=$READOUTCARD_ROOT}    \
       ${LLA_REVISION:+-DLLA_ROOT=$LLA_ROOT}    \
+      ${DIM_RPC_PARALLEL_REVISION:+-DDIM_RPC_PARALLEL_ROOT=$DIM_RPC_PARALLEL_ROOT}    \
       -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 cp ${BUILDDIR}/compile_commands.json ${INSTALLROOT}

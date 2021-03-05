@@ -5,7 +5,7 @@ source: https://github.com/alisw/gsl
 requires:
   - "GCC-Toolchain:(?!osx)"
 build_requires:
-  - autotools
+  - "autotools:(slc6|slc7)"
   - alibuild-recipe-tools
 prefer_system: (?!slc5)
 prefer_system_check: |
@@ -22,7 +22,6 @@ autoreconf -f -v -i
 make ${JOBS:+-j$JOBS}
 make ${JOBS:+-j$JOBS} install
 rm -fv $INSTALLROOT/lib/*.la
-
 # Modulefile
 MODULEDIR="$INSTALLROOT/etc/modulefiles"
 MODULEFILE="$MODULEDIR/$PKGNAME"
