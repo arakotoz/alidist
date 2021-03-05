@@ -3,11 +3,12 @@ version: "v11.0.0"
 tag: "llvmorg-11.0.0"
 source: https://github.com/llvm/llvm-project
 requires:
- - "Python:slc.*"
- - "Python-system:(?!slc.*)"
  - "GCC-Toolchain:(?!osx)"
 build_requires:
+ - "Python:slc.*"
+ - "Python-system:(?!slc.*)"
  - CMake
+ - system-curl
 ---
 #!/bin/sh
 
@@ -33,7 +34,6 @@ case $ARCHITECTURE in
   unknown*) DEFAULT_SYSROOT="" ;;
   *) DEFAULT_SYSROOT="" ;;
 esac
-
 # note that BUILD_SHARED_LIBS=ON IS NEEDED FOR ADDING DYNAMIC PLUGINS
 # to clang-tidy (for instance)
 cmake $SOURCEDIR/llvm \
@@ -87,7 +87,7 @@ cat << \EOF > test.cc
 EOF
 $INSTALLROOT/bin-safe/clang++ -v -c test.cc
 
-curl -o $INSTALLROOT/bin-safe/git-clang-format https://llvm.org/svn/llvm-project/cfe/trunk/tools/clang-format/git-clang-format
+curl -o $INSTALLROOT/bin-safe/git-clang-format https://raw.githubusercontent.com/llvm/llvm-project/main/clang/tools/clang-format/git-clang-format
 chmod u+x $INSTALLROOT/bin-safe/git-clang-format
 
 # Modulefile

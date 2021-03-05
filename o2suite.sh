@@ -2,16 +2,11 @@ package: O2Suite
 version: "1.0.0"
 tag: "O2Suite-1.0.0"
 requires:
-  - Common-O2
   - coconut
   - Control-Core
   - Control-OCCPlugin
-  - Monitoring
-  - Configuration
   - O2
-  - "GCC-Toolchain:(?!osx)"
-  - InfoLogger
-  - ReadoutCard
+  - "ReadoutCard:(slc*)"
   - Readout
   - qcg
   - QualityControl

@@ -1,12 +1,11 @@
 package: QualityControl
 version: "%(tag_basename)s"
-tag: v1.7.3
+tag: v1.11.0
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"
   - Common-O2
   - libInfoLogger
-  - FairRoot
   - Monitoring
   - Configuration
   - O2
@@ -17,6 +16,7 @@ build_requires:
   - CMake
   - CodingGuidelines
   - RapidJSON
+  - alibuild-recipe-tools
 source: https://github.com/AliceO2Group/QualityControl
 prepend_path:
   ROOT_INCLUDE_PATH: "$QUALITYCONTROL_ROOT/include"
@@ -69,8 +69,6 @@ cmake $SOURCEDIR                                              \
       -DConfiguration_ROOT=$CONFIGURATION_ROOT                \
       ${LIBINFOLOGGER_REVISION:+-DInfoLogger_ROOT=$LIBINFOLOGGER_ROOT}                       \
       -DO2_ROOT=$O2_ROOT                                      \
-      -DFAIRROOTPATH=$FAIRROOT_ROOT                           \
-      -DFairRoot_DIR=$FAIRROOT_ROOT                           \
       -DMS_GSL_INCLUDE_DIR=$MS_GSL_ROOT/include               \
       -DARROW_HOME=$ARROW_ROOT                                \
       ${CONTROL_OCCPLUGIN_REVISION:+-DOcc_ROOT=$CONTROL_OCCPLUGIN_ROOT}                      \
@@ -105,36 +103,13 @@ fi
 
 # Modulefile
 mkdir -p etc/modulefiles
-cat > etc/modulefiles/$PKGNAME <<EoF
-#%Module1.0
-proc ModulesHelp { } {
-  global version
-  puts stderr "ALICE Modulefile for $PKGNAME $PKGVERSION-@@PKGREVISION@$PKGHASH@@"
-}
-set version $PKGVERSION-@@PKGREVISION@$PKGHASH@@
-module-whatis "ALICE Modulefile for $PKGNAME $PKGVERSION-@@PKGREVISION@$PKGHASH@@"
-# Dependencies
-module load BASE/1.0                                                                                \\
-            ${BOOST_REVISION:+boost/$BOOST_VERSION-$BOOST_REVISION}                                 \\
-            ${GCC_TOOLCHAIN_REVISION:+GCC-Toolchain/$GCC_TOOLCHAIN_VERSION-$GCC_TOOLCHAIN_REVISION} \\
-            Monitoring/$MONITORING_VERSION-$MONITORING_REVISION                                     \\
-            Configuration/$CONFIGURATION_VERSION-$CONFIGURATION_REVISION                            \\
-            Common-O2/$COMMON_O2_VERSION-$COMMON_O2_REVISION                                        \\
-            ${LIBINFOLOGGER_REVISION:+libInfoLogger/$LIBINFOLOGGER_VERSION-$LIBINFOLOGGER_REVISION} \\
-            FairRoot/$FAIRROOT_VERSION-$FAIRROOT_REVISION                                           \\
-            O2/$O2_VERSION-$O2_REVISION                                                             \\
-            ${ARROW_REVISION:+arrow/$ARROW_VERSION-$ARROW_REVISION}                                 \\
-            Control-OCCPlugin/$CONTROL_OCCPLUGIN_VERSION-$CONTROL_OCCPLUGIN_REVISION                \\
-            ${PYTHON_MODULES_REVISION:+Python-modules/$PYTHON_MODULES_VERSION-$PYTHON_MODULES_REVISION}
+alibuild-generate-module --bin --lib > etc/modulefiles/$PKGNAME
 
 # Our environment
-set QUALITYCONTROL_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
-setenv QUALITYCONTROL_ROOT \$QUALITYCONTROL_ROOT
-prepend-path PATH \$QUALITYCONTROL_ROOT/bin
-prepend-path LD_LIBRARY_PATH \$QUALITYCONTROL_ROOT/lib
-prepend-path LD_LIBRARY_PATH \$QUALITYCONTROL_ROOT/lib64
-prepend-path ROOT_INCLUDE_PATH \$QUALITYCONTROL_ROOT/include
-prepend-path ROOT_DYN_PATH \$QUALITYCONTROL_ROOT/lib
+cat >> etc/modulefiles/$PKGNAME <<EoF
+setenv QUALITYCONTROL_ROOT \$PKG_ROOT
+prepend-path ROOT_INCLUDE_PATH \$PKG_ROOT/include
+prepend-path ROOT_DYN_PATH \$PKG_ROOT/lib
 EoF
 
 mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INSTALLROOT/etc/modulefiles
@@ -147,7 +122,6 @@ if [[ $CMAKE_BUILD_TYPE == COVERAGE ]]; then
   lcov --remove coverage.info '*/usr/*' --output-file coverage.info
   lcov --remove coverage.info '*/boost/*' --output-file coverage.info
   lcov --remove coverage.info '*/ROOT/*' --output-file coverage.info
-  lcov --remove coverage.info '*/FairRoot/*' --output-file coverage.info
   lcov --remove coverage.info '*/G__*Dict*' --output-file coverage.info
   perl -p -i -e "s|$SOURCEDIR||g" coverage.info # Remove the absolute path for sources
   perl -p -i -e "s|$BUILDDIR||g" coverage.info # Remove the absolute path for generated files
