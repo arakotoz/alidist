@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: v21.01
+tag: v21.09
 requires:
   - arrow
   - FairRoot
@@ -25,12 +25,13 @@ requires:
   - libuv
   - libjalienO2
   - cgal
+  - KFParticle
+  - VecGeom
 build_requires:
   - GMP
   - MPFR
   - RapidJSON
   - googlebenchmark
-  - cub
   - O2-customization
 source: https://github.com/AliceO2Group/AliceO2
 env:
@@ -79,14 +80,18 @@ incremental_recipe: |
       export ROOT_INCLUDE_PATH=$(brew --prefix boost)/include:$ROOT_INCLUDE_PATH
     fi
     export ROOT_INCLUDE_PATH=$INSTALLROOT/include:$INSTALLROOT/include/GPU:$ROOT_INCLUDE_PATH
+    # Set Geant4 data sets environment
+    if [[ "$G4INSTALL" != "" ]]; then
+      `$G4INSTALL/bin/geant4-config --datasets | sed 's/[^ ]* //' | sed 's/G4/export G4/' | sed 's/DATA /DATA=/'`
+    fi
     # Clean up old coverage data and tests logs
     find . -name "*.gcov" -o -name "*.gcda" -delete
     # cleanup ROOT files created by tests in build area
     find $PWD -name "*.root" -delete
     rm -rf test_logs
     TESTERR=
-    ctest -E "(test_Framework)|(test_GPUsort(CUDA|HIP))" --output-on-failure ${JOBS+-j $JOBS} || TESTERR=$?
-    ctest -R test_Framework --output-on-failure || TESTERR=$?
+    ctest -C ${CMAKE_BUILD_TYPE} -E "(test_Framework)|(test_GPUsort(CUDA|HIP))" --output-on-failure ${JOBS+-j $JOBS} || TESTERR=$?
+    ctest -C ${CMAKE_BUILD_TYPE} -R test_Framework --output-on-failure || TESTERR=$?
     # Display additional logs for tests that timed out in a non-fatal way
     set +x
     for LOG in test_logs/*.nonfatal; do
@@ -176,13 +181,16 @@ cmake $SOURCEDIR -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                            
       ${XROOTD_REVISION:+-DXROOTD_DIR=$XROOTD_ROOT}                                                       \
       ${JALIEN_ROOT_REVISION:+-DJALIEN_ROOT_ROOT=$JALIEN_ROOT_ROOT}                                       \
       ${ALIBUILD_O2_FORCE_GPU:+-DENABLE_CUDA=ON -DENABLE_HIP=ON -DENABLE_OPENCL1=ON -DENABLE_OPENCL2=ON}  \
-      ${ALIBUILD_O2_FORCE_GPU:+-DOCL2_GPUTARGET=gfx906 -DHIP_AMDGPUTARGET=gfx906 -DCUDA_COMPUTETARGET=75} \
+      ${ALIBUILD_O2_FORCE_GPU:+-DOCL2_GPUTARGET=gfx906 -DHIP_AMDGPUTARGET=gfx906 -DCUDA_COMPUTETARGET=86} \
       ${DISABLE_GPU:+-DENABLE_CUDA=OFF -DENABLE_HIP=OFF -DENABLE_OPENCL=OFF -DENABLE_OPENCL2=OFF}         \
       ${ALIBUILD_ENABLE_CUDA:+-DENABLE_CUDA=ON}                                                           \
       ${ALIBUILD_ENABLE_HIP:+-DENABLE_HIP=ON}                                                             \
       ${CURL_ROOT:+-DCURL_ROOT=$CURL_ROOT}                                                                \
-      ${LIBUV_ROOT:+-DLibUV_ROOT=$LIBUV_ROOT} \
-      ${ENABLE_UPGRADES:+-DENABLE_UPGRADES=ON}                                                            \
+      ${LIBUV_ROOT:+-DLibUV_ROOT=$LIBUV_ROOT}                                                             \
+      ${BUILD_ANALYSIS:+-DBUILD_ANALYSIS=$BUILD_ANALYSIS}                                                 \
+      ${BUILD_EXAMPLES:+-DBUILD_EXAMPLES=$BUILD_EXAMPLES}                                                 \
+      ${BUILD_TEST_ROOT_MACROS:+-BUILD_TEST_ROOT_MACROS=$BUILD_TEST_ROOT_MACROS}                          \
+      ${ENABLE_UPGRADES:+-DENABLE_UPGRADES=$ENABLE_UPGRADES}                                              \
       ${ARROW_ROOT:+-Dgandiva_DIR=$ARROW_ROOT/lib/cmake/arrow}
 
 cmake --build . -- ${JOBS+-j $JOBS} install
@@ -232,7 +240,9 @@ module load BASE/1.0 \\
             ${GLFW_REVISION:+GLFW/$GLFW_VERSION-$GLFW_REVISION}                                     \\
             ${FMT_REVISION:+fmt/$FMT_VERSION-$FMT_REVISION}                                         \\
             ${AEGIS_REVISION:+AEGIS/$AEGIS_VERSION-$AEGIS_REVISION}                                 \\
-            ${LIBJALIENO2_REVISION:+libjalienO2/$LIBJALIENO2_VERSION-$LIBJALIENO2_REVISION}
+            ${LIBJALIENO2_REVISION:+libjalienO2/$LIBJALIENO2_VERSION-$LIBJALIENO2_REVISION}         \\
+            ${KFPARTICLE_REVISION:+KFParticle/$KFPARTICLE_VERSION-$KFPARTICLE_REVISION}             \\
+            ${CURL_REVISION:+curl/$CURL_VERSION-$CURL_REVISION}
 # Our environment
 set O2_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
 setenv O2_ROOT \$O2_ROOT
@@ -262,8 +272,8 @@ if [[ $ALIBUILD_O2_TESTS ]]; then
   # Clean up ROOT files created by tests in build area
   find $PWD -name "*.root" -delete
   TESTERR=
-  ctest -E "(test_Framework)|(test_GPUsort(CUDA|HIP))" --output-on-failure ${JOBS+-j $JOBS} || TESTERR=$?
-  ctest -R test_Framework --output-on-failure || TESTERR=$?
+  ctest -C ${CMAKE_BUILD_TYPE} -E "(test_Framework)|(test_GPUsort(CUDA|HIP))" --output-on-failure ${JOBS+-j $JOBS} || TESTERR=$?
+  ctest -C ${CMAKE_BUILD_TYPE} -R test_Framework --output-on-failure || TESTERR=$?
   # Display additional logs for tests that timed out in a non-fatal way
   set +x
   for LOG in test_logs/*.nonfatal; do

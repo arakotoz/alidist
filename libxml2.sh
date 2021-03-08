@@ -2,7 +2,7 @@ package: libxml2
 version: "%(tag_basename)s"
 tag: v2.9.3
 build_requires:
-  - autotools
+  - "autotools:(slc6|slc7)"
   - zlib
   - "GCC-Toolchain:(?!osx)"
 source: https://github.com/alisw/libxml2.git
@@ -21,7 +21,6 @@ autoreconf -i
 
 make ${JOBS+-j $JOBS}
 make install
-
 # Modulefile
 mkdir -p etc/modulefiles
 cat > etc/modulefiles/$PKGNAME <<EoF
