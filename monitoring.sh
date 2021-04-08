@@ -1,10 +1,12 @@
 package: Monitoring
 version: "%(tag_basename)s"
-tag: v3.6.1
+tag: v3.7.1
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"
   - "ApMon-CPP:(?!osx)"
+  - "system-curl:(slc8)"
+  - "curl:(?!slc8)"
 build_requires:
   - CMake
   - alibuild-recipe-tools
