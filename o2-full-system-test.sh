@@ -8,7 +8,16 @@ force_rebuild: 1
 #!/bin/bash -e
 
 echo TEST ----------- env
+echo df:
+df
+echo -----
+echo ls /tmp
+ls -al /tmp
+echo -----
+echo env:
 env
+echo readlink:
+readlink /proc/self/exe || true
 echo END TEST ------- env
 
 rm -Rf $BUILDDIR/full-system-test-sim
@@ -18,7 +27,7 @@ export JOBUTILS_PRINT_ON_ERROR=1
 export JOBUTILS_JOB_TIMEOUT=900
 export NHBPERTF=128
 export SHMSIZE=8000000000
-NEvents=5 NEventsQED=100 O2SIMSEED=12345 $O2_ROOT/prodtests/full_system_test.sh
+ALICE_O2SIM_DUMPLOG=1 NEvents=5 NEventsQED=100 O2SIMSEED=12345 $O2_ROOT/prodtests/full_system_test.sh
 $O2_ROOT/prodtests/full_system_test_ci_extra_tests.sh
 popd
 rm -Rf $BUILDDIR/full-system-test-sim
