@@ -1,6 +1,6 @@
 package: libInfoLogger
 version: "%(tag_basename)s"
-tag: v2.1.0
+tag: v2.1.1
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"
@@ -44,7 +44,6 @@ module load BASE/1.0                                                          \\
 # Our environment
 set INFOLOGGER_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
 setenv INFOLOGGER_ROOT \$INFOLOGGER_ROOT
-prepend-path PATH \$INFOLOGGER_ROOT/bin
 prepend-path LD_LIBRARY_PATH \$INFOLOGGER_ROOT/lib
 EoF
 mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INSTALLROOT/etc/modulefiles

@@ -1,6 +1,6 @@
 package: ReadoutCard
 version: "%(tag_basename)s"
-tag: v0.32.0
+tag: v0.32.1
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"
@@ -26,11 +26,6 @@ incremental_recipe: |
 case $ARCHITECTURE in
     osx*) [[ ! $BOOST_ROOT ]] && BOOST_ROOT=$(brew --prefix boost);;
 esac
-
-# Enforce no warning code in the PR checker
-if [[ $ALIBUILD_O2_TESTS ]]; then
-  CXXFLAGS="${CXXFLAGS} -Werror -Wno-error=deprecated-declarations"
-fi
 
 cmake $SOURCEDIR                                                      \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                             \
