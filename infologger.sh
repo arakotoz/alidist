@@ -1,6 +1,6 @@
 package: InfoLogger
 version: "%(tag_basename)s"
-tag: v1.3.23
+tag: v2.1.1
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"

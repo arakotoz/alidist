@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: v21.13
+tag: "nightly-20210728"
 requires:
   - arrow
   - FairRoot
@@ -25,6 +25,7 @@ requires:
   - cgal
   - KFParticle
   - VecGeom
+  - FFTW3
 build_requires:
   - GMP
   - MPFR
@@ -189,7 +190,8 @@ cmake $SOURCEDIR -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                            
       ${BUILD_EXAMPLES:+-DBUILD_EXAMPLES=$BUILD_EXAMPLES}                                                 \
       ${BUILD_TEST_ROOT_MACROS:+-BUILD_TEST_ROOT_MACROS=$BUILD_TEST_ROOT_MACROS}                          \
       ${ENABLE_UPGRADES:+-DENABLE_UPGRADES=$ENABLE_UPGRADES}                                              \
-      ${ARROW_ROOT:+-Dgandiva_DIR=$ARROW_ROOT/lib/cmake/arrow}
+      ${ARROW_ROOT:+-Dgandiva_DIR=$ARROW_ROOT/lib/cmake/arrow}                                            \
+      ${ARROW_ROOT:+-Darrow_DIR=$ARROW_ROOT/lib/cmake/arrow}
 
 cmake --build . -- ${JOBS+-j $JOBS} install
 
@@ -241,7 +243,8 @@ module load BASE/1.0 \\
             ${LIBJALIENO2_REVISION:+libjalienO2/$LIBJALIENO2_VERSION-$LIBJALIENO2_REVISION}         \\
             ${KFPARTICLE_REVISION:+KFParticle/$KFPARTICLE_VERSION-$KFPARTICLE_REVISION}             \\
             ${CURL_REVISION:+curl/$CURL_VERSION-$CURL_REVISION}                                     \\
-            ${FAIRMQ_REVISION:+FairMQ/$FAIRMQ_VERSION-$FAIRMQ_REVISION}
+            ${FAIRMQ_REVISION:+FairMQ/$FAIRMQ_VERSION-$FAIRMQ_REVISION}                             \\
+            ${FFTW3_REVISION:+FFTW3/$FFTW3_VERSION-$FFTW3_REVISION}
 # Our environment
 set O2_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
 setenv O2_ROOT \$O2_ROOT
