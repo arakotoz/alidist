@@ -22,7 +22,7 @@ cmake $SOURCEDIR -DCMAKE_INSTALL_PREFIX=$INSTALLROOT      \
                  -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE     \
                  ${CXXSTD:+-DCMAKE_CXX_STANDARD=$CXXSTD}  \
                  -DCMAKE_SKIP_RPATH=TRUE \
-		 ${SPECIALFFLAGS:+-DCMAKE_Fortran_FLAGS="-fallow-argument-mismatch -fallow-invalid-boz"}
+                 ${SPECIALFFLAGS:+-DCMAKE_Fortran_FLAGS="-fallow-argument-mismatch -fallow-invalid-boz -fno-tree-loop-distribute-patterns"}
 make ${JOBS:+-j $JOBS} install
 
 [[ ! -d $INSTALLROOT/lib64 ]] && ln -sf lib $INSTALLROOT/lib64
@@ -46,7 +46,6 @@ set GEANT3_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
 setenv GEANT3_ROOT \$GEANT3_ROOT
 setenv GEANT3DIR \$GEANT3_ROOT
 setenv G3SYS \$GEANT3_ROOT
-prepend-path PATH \$GEANT3_ROOT/bin
 prepend-path LD_LIBRARY_PATH \$GEANT3_ROOT/lib64
 prepend-path ROOT_INCLUDE_PATH \$GEANT3_ROOT/include/TGeant3
 EoF

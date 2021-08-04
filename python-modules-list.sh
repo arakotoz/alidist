@@ -12,6 +12,7 @@ env:
     PyYAML==5.1
     uproot==3.4.18
     psutil==5.8.0
+    scons==4.1.0
   PIP36_REQUIREMENTS: |
     numpy==1.16.2
     scipy==1.2.1
@@ -26,18 +27,18 @@ env:
     pandas==0.24.2
     scikit-learn==0.20.3
   PIP38_REQUIREMENTS: |
-    scipy==1.4.1
+    scipy==1.6.1
     Cython==0.29.21
     seaborn==0.9.0
     sklearn-evaluation==0.4
-    Keras==2.2.4
-    tensorflow==2.2.0
-    xgboost==0.82
-    numpy==1.16.2
+    Keras==2.4.3
+    tensorflow==2.4.1
+    xgboost==1.3.3
+    numpy==1.19.5
     dryable==1.0.3
     responses==0.10.6
-    pandas==1.0.5
-    scikit-learn==0.20.3
+    pandas==1.2.3
+    scikit-learn==0.24.1
   PIP39_REQUIREMENTS: |
     numpy==1.19.4
     scipy==1.5.4

@@ -1,6 +1,6 @@
 package: ReadoutCard
 version: "%(tag_basename)s"
-tag: v0.30.0
+tag: v0.32.1
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"
@@ -27,11 +27,6 @@ case $ARCHITECTURE in
     osx*) [[ ! $BOOST_ROOT ]] && BOOST_ROOT=$(brew --prefix boost);;
 esac
 
-# Enforce no warning code in the PR checker
-if [[ $ALIBUILD_O2_TESTS ]]; then
-  CXXFLAGS="${CXXFLAGS} -Werror -Wno-error=deprecated-declarations"
-fi
-
 cmake $SOURCEDIR                                                      \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                             \
       ${BOOST_REVISION:+-DBOOST_ROOT=$BOOST_ROOT}                      \
@@ -57,7 +52,7 @@ mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INS
 
 # External RPM dependencies
 cat > $INSTALLROOT/.rpm-extra-deps <<EoF
-pda-kadapter-dkms >= 1.1.0
+pda-kadapter-dkms >= 2.0.0
 libhugetlbfs
 libhugetlbfs-utils
 EoF

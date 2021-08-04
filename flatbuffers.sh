@@ -1,14 +1,11 @@
 package: flatbuffers
-version: v1.11.0
+version: v1.12.0
 source: https://github.com/google/flatbuffers
 requires:
   - zlib
 build_requires:
  - CMake
  - "GCC-Toolchain:(?!osx)"
-prefer_system: "(?!slc5)"
-prefer_system_check: |
-  which flatc && printf "#include \"flatbuffers/flatbuffers.h\"\nint main(){}" | c++ -I$(brew --prefix flatbuffers)/include -xc++ -std=c++11 - -o /dev/null
 ---
 cmake $SOURCEDIR                          \
       -G "Unix Makefiles"                 \

@@ -1,6 +1,6 @@
 package: JAliEn-ROOT
 version: "%(tag_basename)s"
-tag: "0.6.4"
+tag: "0.6.6"
 source: https://gitlab.cern.ch/jalien/jalien-root.git
 requires:
   - ROOT
@@ -57,7 +57,6 @@ module load BASE/1.0 ${GCC_TOOLCHAIN_REVISION:+GCC-Toolchain/$GCC_TOOLCHAIN_VERS
 
 # Our environment
 set JALIEN_ROOT_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
-prepend-path PATH \$JALIEN_ROOT_ROOT/bin
 prepend-path LD_LIBRARY_PATH \$JALIEN_ROOT_ROOT/lib
 append-path ROOT_PLUGIN_PATH \$JALIEN_ROOT_ROOT/etc/plugins
 prepend-path ROOT_INCLUDE_PATH \$JALIEN_ROOT_ROOT/include

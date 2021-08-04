@@ -6,6 +6,7 @@ requires:
   - c-ares
   - "OpenSSL:(?!osx)"
   - "GCC-Toolchain:(?!osx)"
+  - re2
 build_requires:
   - CMake
   - abseil
@@ -41,6 +42,7 @@ cmake $SOURCEDIR                                    \
   -DgRPC_BENCHMARK_PROVIDER=packet                  \
   -DgRPC_BUILD_GRPC_CPP_PLUGIN=ON                   \
   -DgRPC_BUILD_CSHARP_EXT=OFF                       \
+  -DgRPC_RE2_PROVIDER=package                       \
   ${OPENSSL_ROOT_DIR:+-DOPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR} \
   -DgRPC_CARES_PROVIDER=package
 
@@ -64,6 +66,7 @@ module load BASE/1.0                                                          \\
             ${GCC_TOOLCHAIN_REVISION:+GCC-Toolchain/$GCC_TOOLCHAIN_VERSION-$GCC_TOOLCHAIN_REVISION} \\
             ${C_ARES_REVISION:+c-ares/$C_ARES_VERSION-$C_ARES_REVISION}        \\
             ${OPENSSL_REVISION:+OpenSSL/$OPENSSL_VERSION-$OPENSSL_REVISION} \\
+            ${RE2_REVISION:+re2/$RE2_VERSION-$RE2_REVISION} \\
             ${PROTOBUF_REVISION:+protobuf/$PROTOBUF_VERSION-$PROTOBUF_REVISION}
 # Our environment
 set GRPC_ROOT \$::env(BASEDIR)/$PKGNAME/\$version

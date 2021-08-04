@@ -16,7 +16,7 @@ cp "${O2_ROOT}"/compile_commands.json .
 # We will try to setup a list of files to be checked by using 2 specific Git commits to compare
 
 # Heuristically guess source directory
-O2_SRC=$(python3 -c 'import json,sys,os; sys.stdout.write( os.path.commonprefix([ x["file"] for x in json.loads(open("compile_commands.json").read()) if not "G__" in x["file"] and x["file"].endswith(".cxx") ]) )')
+O2_SRC=$(python3 -c 'import json, os; print(os.path.commonprefix([x["file"] for x in json.loads(open("compile_commands.json").read()) if "sw/BUILD" not in x["file"] and "G__" not in x["file"] and x["file"].endswith(".cxx")]))')
 [[ -e "$O2_SRC"/CMakeLists.txt && -d "$O2_SRC"/.git ]]
 
 # We have something to compare our working directory to (ALIBUILD_BASE_HASH). We check only the
@@ -76,11 +76,12 @@ sed -e 's/ warning:/ error:/g' error-log.txt > error-log.txt.0 && mv error-log.t
 
 # Run copyright notice check
 COPYRIGHT="$(cat <<'EOF'
-// Copyright CERN and copyright holders of ALICE O2. This software is
-// distributed under the terms of the GNU General Public License v3 (GPL
-// Version 3), copied verbatim in the file "COPYING".
+// Copyright 2019-2020 CERN and copyright holders of ALICE O2.
+// See https://alice-o2.web.cern.ch/copyright for details of the copyright holders.
+// All rights not expressly granted are reserved.
 //
-// See http://alice-o2.web.cern.ch/license for full licensing information.
+// This software is distributed under the terms of the GNU General Public
+// License v3 (GPL Version 3), copied verbatim in the file "COPYING".
 //
 // In applying this license CERN does not waive the privileges and immunities
 // granted to it by virtue of its status as an Intergovernmental Organization
@@ -88,7 +89,7 @@ COPYRIGHT="$(cat <<'EOF'
 EOF
 )"
 COPYRIGHT_LINES=$(echo "$COPYRIGHT" | wc -l)
-COPYRIGHT_EXCLUDE_REGEXP="/3rdparty/"  # exclude files from the copyright check
+COPYRIGHT_EXCLUDE_REGEXP="/3rdparty/|Utilities/Tools/cpulimit/"  # exclude files from the copyright check
 set +x
 while read FILE; do
   [[ ${FILE:0:2} != "./" ]] || FILE=${FILE:2}
