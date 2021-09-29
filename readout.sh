@@ -1,6 +1,6 @@
 package: Readout
 version: "%(tag_basename)s"
-tag: v2.5.0
+tag: v2.5.2
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"
@@ -27,7 +27,7 @@ incremental_recipe: |
 case $ARCHITECTURE in
     osx*) 
         [[ ! $BOOST_ROOT ]] && BOOST_ROOT=$(brew --prefix boost)
-        [[ ! $OPENSSL_ROOT ]] && OPENSSL_ROOT_DIR=$(brew --prefix openssl)
+        [[ ! $OPENSSL_ROOT ]] && OPENSSL_ROOT_DIR=$(brew --prefix openssl@1.1)
         [[ ! $LZ4_ROOT ]] && LZ4_ROOT=$(brew --prefix lz4)
         [[ ! $ZEROMQ_ROOT ]] && ZEROMQ_ROOT=$(brew --prefix zeromq)
         [[ ! $FMT_ROOT ]] && FMT_ROOT=`brew --prefix fmt`

@@ -1,6 +1,6 @@
 package: ROOT
 version: "%(tag_basename)s"
-tag: "v6-24-02"
+tag: "v6-24-06"
 source: https://github.com/root-project/root.git
 requires:
   - arrow
@@ -23,7 +23,6 @@ build_requires:
   - alibuild-recipe-tools
 env:
   ROOTSYS: "$ROOT_ROOT"
-  SYSTEM_VERSION_COMPAT: "1"
 prepend_path:
   PYTHONPATH: "$ROOTSYS/lib"
   ROOT_DYN_PATH: "$ROOT_ROOT/lib"
@@ -38,8 +37,6 @@ incremental_recipe: |
 ---
 #!/bin/bash -e
 unset ROOTSYS
-# Get ROOT to work on Big Sur (this will modify the version returned by sw_vers from 11.0 to 10.16)
-export SYSTEM_VERSION_COMPAT=1
 COMPILER_CC=cc
 COMPILER_CXX=c++
 COMPILER_LD=c++
@@ -73,7 +70,7 @@ case $ARCHITECTURE in
     COMPILER_LD=clang
     SONAME=dylib
     [[ ! $GSL_ROOT ]] && GSL_ROOT=$(brew --prefix gsl)
-    [[ ! $OPENSSL_ROOT ]] && SYS_OPENSSL_ROOT=$(brew --prefix openssl)
+    [[ ! $OPENSSL_ROOT ]] && SYS_OPENSSL_ROOT=$(brew --prefix openssl@1.1)
     [[ ! $LIBPNG_ROOT ]] && LIBPNG_ROOT=$(brew --prefix libpng)
   ;;
 esac
@@ -213,7 +210,6 @@ cat >> etc/modulefiles/$PKGNAME <<EoF
 setenv ROOT_RELEASE \$version
 setenv ROOT_BASEDIR \$::env(BASEDIR)/$PKGNAME
 setenv ROOTSYS \$::env(ROOT_BASEDIR)/\$::env(ROOT_RELEASE)
-setenv SYSTEM_VERSION_COMPAT 1
 prepend-path PYTHONPATH \$PKG_ROOT/lib
 prepend-path ROOT_DYN_PATH \$PKG_ROOT/lib
 EoF

@@ -1,6 +1,6 @@
 package: QualityControl
 version: "%(tag_basename)s"
-tag: v1.24.0
+tag: v1.31.0
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"
@@ -12,6 +12,7 @@ requires:
   - arrow
   - Control-OCCPlugin
   - Python-modules
+  - libjalienO2
 build_requires:
   - CMake
   - CodingGuidelines
@@ -21,6 +22,11 @@ source: https://github.com/AliceO2Group/QualityControl
 prepend_path:
   ROOT_INCLUDE_PATH: "$QUALITYCONTROL_ROOT/include"
 incremental_recipe: |
+  # For the PR checkers (which sets ALIBUILD_O2_TESTS), we impose -Werror as a compiler flag
+  if [[ $ALIBUILD_O2_TESTS ]]; then
+    CXXFLAGS="${CXXFLAGS} -Werror"
+  fi
+  CXXFLAGS="${CXXFLAGS} -Wno-error=deprecated-declarations" # Outside the if to make sure we have it in all cases
   cmake --build . -- ${JOBS:+-j$JOBS} install
   mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INSTALLROOT/etc/modulefiles
   cp ${BUILDDIR}/compile_commands.json ${INSTALLROOT}
@@ -29,7 +35,7 @@ incremental_recipe: |
     echo "Run the tests"
     LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$INSTALLROOT/lib
     PATH=$PATH:$INSTALLROOT/bin
-    ROOT_DYN_PATH=$ROOT_DYN_PATH:$INSTALLROOT/lib ctest --output-on-failure -LE manual ${JOBS+-j $JOBS}
+    ROOT_DYN_PATH=$ROOT_DYN_PATH:$INSTALLROOT/lib ctest --output-on-failure -LE manual
   fi
 ---
 #!/bin/bash -ex
@@ -37,7 +43,7 @@ incremental_recipe: |
 case $ARCHITECTURE in
   osx*) 
       [[ ! $BOOST_ROOT ]] && BOOST_ROOT=$(brew --prefix boost)
-      [[ ! $OPENSSL_ROOT ]] && OPENSSL_ROOT_DIR=$(brew --prefix openssl)
+      [[ ! $OPENSSL_ROOT ]] && OPENSSL_ROOT_DIR=$(brew --prefix openssl@1.1)
       [[ ! $LIBUV_ROOT ]] && LIBUV_ROOT=$(brew --prefix libuv)
       SONAME=dylib
   ;;
@@ -46,11 +52,11 @@ case $ARCHITECTURE in
   ;;
 esac
 
-# For the PR checkers (which sets ALIBUILD_O2_TESTS),
-# we impose -Werror as a compiler flag
+# For the PR checkers (which sets ALIBUILD_O2_TESTS), we impose -Werror as a compiler flag
 if [[ $ALIBUILD_O2_TESTS ]]; then
-  CXXFLAGS="${CXXFLAGS} -Werror -Wno-error=deprecated-declarations"
+  CXXFLAGS="${CXXFLAGS} -Werror"
 fi
+CXXFLAGS="${CXXFLAGS} -Wno-error=deprecated-declarations"  # Outside the if to make sure we have it in all cases
 
 # Use ninja if in devel mode, ninja is found and DISABLE_NINJA is not 1
 if [[ ! $CMAKE_GENERATOR && $DISABLE_NINJA != 1 && $DEVEL_SOURCES != $SOURCEDIR ]]; then
@@ -76,6 +82,7 @@ cmake $SOURCEDIR                                              \
       ${OPENSSL_ROOT_DIR:+-DOPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR}          \
       ${LIBUV_ROOT:+-DLibUV_INCLUDE_DIR=$LIBUV_ROOT/include}             \
       ${LIBUV_ROOT:+-DLibUV_LIBRARY=$LIBUV_ROOT/lib/libuv.$SONAME}       \
+      ${LIBJALIENO2_ROOT:+-DlibjalienO2_ROOT=$LIBJALIENO2_ROOT}          \
       -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 cp ${BUILDDIR}/compile_commands.json ${INSTALLROOT}
@@ -87,7 +94,7 @@ if [[ $ALIBUILD_O2_TESTS ]]; then
   echo "Run the tests"
   LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$INSTALLROOT/lib
   PATH=$PATH:$INSTALLROOT/bin
-  ROOT_DYN_PATH=$ROOT_DYN_PATH:$INSTALLROOT/lib ctest --output-on-failure -LE manual ${JOBS+-j $JOBS}
+  ROOT_DYN_PATH=$ROOT_DYN_PATH:$INSTALLROOT/lib ctest --output-on-failure -LE manual
 fi
 
 DEVEL_SOURCES="`readlink $SOURCEDIR || echo $SOURCEDIR`"

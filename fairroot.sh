@@ -1,6 +1,6 @@
 package: FairRoot
 version: "%(short_hash)s"
-tag: "v18.4.1"
+tag: "v18.4.2"
 source: https://github.com/FairRootGroup/FairRoot
 requires:
   - generators
@@ -10,7 +10,6 @@ requires:
   - protobuf
   - FairLogger
   - FairMQ
-  - yaml-cpp
   - "GCC-Toolchain:(?!osx)"
 env:
   VMCWORKDIR: "$FAIRROOT_ROOT/share/fairbase/examples"
@@ -62,6 +61,7 @@ cmake $SOURCEDIR                                                                
       ${PROTOBUF_ROOT:+-DProtobuf_INCLUDE_DIR=$PROTOBUF_ROOT/include}                       \
       ${PROTOBUF_ROOT:+-DProtobuf_PROTOC_EXECUTABLE=$PROTOBUF_ROOT/bin/protoc}              \
       ${CXXSTD:+-DCMAKE_CXX_STANDARD=$CXXSTD}                                               \
+      -DCMAKE_DISABLE_FIND_PACKAGE_yaml-cpp=ON                                              \
       -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                                                    \
       -DCMAKE_INSTALL_LIBDIR=lib                                                            \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT
@@ -103,9 +103,6 @@ module load BASE/1.0                                                            
             ${GCC_TOOLCHAIN_REVISION:+GCC-Toolchain/$GCC_TOOLCHAIN_VERSION-$GCC_TOOLCHAIN_REVISION}
 # Our environment
 set FAIRROOT_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
-setenv VMCWORKDIR \$FAIRROOT_ROOT/share/fairbase/examples
-setenv GEOMPATH \$::env(VMCWORKDIR)/common/geometry
-setenv CONFIG_DIR \$::env(VMCWORKDIR)/common/gconfig
 prepend-path PATH \$FAIRROOT_ROOT/bin
 prepend-path LD_LIBRARY_PATH \$FAIRROOT_ROOT/lib
 prepend-path ROOT_INCLUDE_PATH \$FAIRROOT_ROOT/include
