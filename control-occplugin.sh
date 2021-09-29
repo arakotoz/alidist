@@ -1,6 +1,6 @@
 package: Control-OCCPlugin
 version: "%(tag_basename)s"
-tag: "v0.25.80"
+tag: "v0.26.6"
 requires:
   - FairMQ
   - FairLogger
@@ -28,7 +28,7 @@ case $ARCHITECTURE in
       [[ ! $BOOST_ROOT ]] && BOOST_ROOT=$(brew --prefix boost)
       [[ ! $PROTOBUF_ROOT ]] && PROTOBUF_ROOT=$(brew --prefix protobuf)
       [[ ! $GRPC_ROOT ]] && GRPC_ROOT=$(brew --prefix grpc)
-      [[ ! $OPENSSL_ROOT ]] && OPENSSL_ROOT_DIR=$(brew --prefix openssl)
+      [[ ! $OPENSSL_ROOT ]] && OPENSSL_ROOT_DIR=$(brew --prefix openssl@1.1)
       LIBEXT=dylib
     ;;
 esac
