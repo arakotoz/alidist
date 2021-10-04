@@ -1,27 +1,16 @@
-package: O2Suite
-version: "1.0.0"
-tag: "O2Suite-1.0.0"
+package: O2PDPSuite
+version: "%(tag_basename)s"
+tag: "nightly-20210929"
 requires:
-  - coconut
-  - Control-Core
-  - Control-OCCPlugin
   - O2
-  - O2Physics
-  - "ReadoutCard:(slc*)"
-  - Readout
+  - DataDistribution
   - QualityControl
-  - "DataDistribution:(?!osx)"
-  - "ALF:(?!osx)"
-  - "BookkeepingApiCpp:(slc*)"
-  - "mesos:(slc8)"
-  - "TpcFecUtils:(?!osx)"
+  - O2DataProcessing
+  - O2sim
+  - ODC
 valid_defaults:
   - o2
   - o2-dataflow
-  - o2-dev-fairroot
-  - alo
-  - o2-prod
-  - o2-ninja
 ---
 #!/bin/bash -ex
 

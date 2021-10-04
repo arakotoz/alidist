@@ -3,6 +3,7 @@ version: "1.0"
 requires:
   - O2Suite
   - O2sim
+  - O2DataProcessing
 force_rebuild: 1
 ---
 #!/bin/bash -e
@@ -22,6 +23,14 @@ ALICE_O2SIM_DUMPLOG=1 NEvents=5 NEventsQED=100 O2SIMSEED=12345 $O2_ROOT/prodtest
 $O2_ROOT/prodtests/full_system_test_ci_extra_tests.sh
 popd
 rm -Rf $BUILDDIR/full-system-test-sim
+
+# we also run the sim_challeng.sh script to check a basic MC workflow (including AOD)
+rm -Rf $BUILDDIR/sim-challenge
+mkdir $BUILDDIR/sim-challenge
+pushd $BUILDDIR/sim-challenge
+$O2_ROOT/prodtests/sim_challenge.sh
+popd
+rm -Rf $BUILDDIR/sim-challenge
 
 # Dummy modulefile
 mkdir -p $INSTALLROOT/etc/modulefiles

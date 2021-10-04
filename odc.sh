@@ -1,7 +1,7 @@
 #Online Device Control
 package: ODC
 version: "%(tag_basename)s"
-tag: "0.34"
+tag: "0.44"
 source: https://github.com/FairRootGroup/ODC.git
 requires:
 - boost
@@ -10,7 +10,7 @@ requires:
 - FairLogger
 - FairMQ
 - grpc
-- InfoLogger
+- libInfoLogger
 build_requires:
   - CMake
   - GCC-Toolchain:(?!osx.*)
