@@ -1,6 +1,6 @@
 package: arrow
-version: "v5.0.0-alice1"
-tag: 453fc01ec151410a19cf681d626b6b601f0d3c13
+version: "v5.0.0-alice3"
+tag: 61660be0e61d2466e160ce6e9e9bbe8865ed8156
 source: https://github.com/alisw/arrow.git
 requires:
   - boost
@@ -98,6 +98,7 @@ cmake ./src_tmp/cpp                                                             
       ${LZ4_ROOT:+-DLZ4_ROOT=${LZ4_ROOT}}                                                           \
       ${UTF8PROC_ROOT:+-Dutf8proc_ROOT=${UTF8PROC_ROOT}}                                            \
       ${OPENSSL_ROOT:+-DOpenSSL_ROOT=${OPENSSL_ROOT}}                                               \
+      ${CLANG_ROOT:+-DLLVM_DIR=${CLANG_ROOT}}                                                       \
       -DARROW_WITH_SNAPPY=OFF                                                                       \
       -DARROW_WITH_ZSTD=OFF                                                                         \
       -DARROW_WITH_BROTLI=OFF                                                                       \

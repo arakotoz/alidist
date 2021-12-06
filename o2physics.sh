@@ -1,6 +1,6 @@
 package: O2Physics
 version: "%(tag_basename)s"
-tag: "nightly-20211004"
+tag: "nightly-20211204"
 requires:
   - O2
   - ONNXRuntime
@@ -11,10 +11,17 @@ build_requires:
   - alibuild-recipe-tools
 source: https://github.com/AliceO2Group/O2Physics
 incremental_recipe: |
+  [[ $ALIBUILD_O2_TESTS ]] && CXXFLAGS="${CXXFLAGS} -Werror -Wno-error=deprecated-declarations"
   cmake --build . -- ${JOBS:+-j$JOBS} install
   mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INSTALLROOT/etc/modulefiles
 ---
 #!/bin/sh
+
+if [[ $ALIBUILD_O2_TESTS ]]; then
+  # Impose extra errors.
+  CXXFLAGS="${CXXFLAGS} -Werror -Wno-error=deprecated-declarations"
+fi
+
 cmake "$SOURCEDIR" "-DCMAKE_INSTALL_PREFIX=$INSTALLROOT"          \
       -G Ninja                                                    \
       ${CMAKE_BUILD_TYPE:+"-DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE"} \
@@ -24,14 +31,18 @@ cmake "$SOURCEDIR" "-DCMAKE_INSTALL_PREFIX=$INSTALLROOT"          \
       ${LIBJALIENO2_ROOT:+-DlibjalienO2_ROOT=$LIBJALIENO2_ROOT}
 cmake --build . -- ${JOBS+-j $JOBS} install
 
+# export compile_commands.json in (taken from o2.sh)
+DEVEL_SOURCES="`readlink $SOURCEDIR || echo $SOURCEDIR`"
+if [ "$DEVEL_SOURCES" != "$SOURCEDIR" ]; then
+  perl -p -i -e "s|$SOURCEDIR|$DEVEL_SOURCES|" compile_commands.json
+  ln -sf $BUILDDIR/compile_commands.json $DEVEL_SOURCES/compile_commands.json
+fi
+
 # Modulefile
 mkdir -p etc/modulefiles
 MODULEFILE="etc/modulefiles/$PKGNAME"
 alibuild-generate-module --bin --lib > "$MODULEFILE"
 cat >> "$MODULEFILE" <<EoF
-
-# Dependencies
-module load ${ONNXRUNTIME_REVISION:+ONNXRuntime/$ONNXRUNTIME_VERSION-$ONNXRUNTIME_REVISION}
 # Our environment
 set O2PHYSICS_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
 setenv O2PHYSICS_ROOT \$O2PHYSICS_ROOT
