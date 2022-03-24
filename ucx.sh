@@ -6,6 +6,7 @@ requires:
 build_requires:
   - "autotools:(slc6|slc7)"
   - alibuild-recipe-tools
+  - "GCC-Toolchain:(?!osx)"
 source: https://github.com/openucx/ucx
 ---
 #!/bin/bash -e
@@ -38,7 +39,6 @@ rsync -a --delete --exclude "**/.git" ${SOURCEDIR}/ .
 
 make ${JOBS+-j$JOBS} || make -j1
 make install
-
 
 # Modulefile
 MODULEDIR="$INSTALLROOT/etc/modulefiles"
