@@ -17,6 +17,7 @@ mkdir $BUILDDIR/full-system-test-sim
 pushd $BUILDDIR/full-system-test-sim
 export JOBUTILS_PRINT_ON_ERROR=1
 export JOBUTILS_JOB_TIMEOUT=1800
+export PRINT_WORKFLOW=1
 export NHBPERTF=128
 export SHMSIZE=8000000000
 ALICE_O2SIM_DUMPLOG=1 NEvents=5 NEventsQED=100 O2SIMSEED=12345 $O2_ROOT/prodtests/full_system_test.sh
@@ -28,7 +29,8 @@ rm -Rf $BUILDDIR/full-system-test-sim
 rm -Rf $BUILDDIR/sim-challenge
 mkdir $BUILDDIR/sim-challenge
 pushd $BUILDDIR/sim-challenge
-SIM_CHALLENGE_ANATESTING=ON $O2_ROOT/prodtests/sim_challenge.sh &> sim-challenge.log
+# SIM_CHALLENGE_ANATESTING=ON --> reenable when we want analysis testing be part of the tests 
+$O2_ROOT/prodtests/sim_challenge.sh &> sim-challenge.log
 result=$(grep "Return status" sim-challenge.log | grep -v ": 0" || true)
 if [ "${result}" ]; then
   # something is wrong if we get a match here
