@@ -1,7 +1,7 @@
 package: XRootD
 version: "%(tag_basename)s"
-tag: "v5.4.0"
-source: https://github.com/arakotoz/xrootd
+tag: "v5.4.2-alice1"
+source: https://github.com/alisw/xrootd
 requires:
  - "OpenSSL:(?!osx)"
  - Python-modules
@@ -12,13 +12,12 @@ build_requires:
  - "osx-system-openssl:(osx.*)"
  - "GCC-Toolchain:(?!osx)"
  - UUID:(?!osx)
+ - alibuild-recipe-tools
 ---
-#!/bin/bash -ex
-[[ -e $SOURCEDIR/bindings ]] && XROOTD_V4=True && XROOTD_PYTHON=True || XROOTD_PYTHON=False
-
-export PYTHON_EXECUTABLE=$( $(realpath $(which python3)) -c 'import sys; print(sys.executable)')
-export PYTHON_LIBRARY=`find $( $(realpath $(which python3)) -c 'import sys; print(sys.base_prefix)')/lib -name 'libpython*.dylib'`
-export PYTHON_INCLUDE_DIR=`ls -d $( $(realpath $(which python3)) -c 'import sys; print(sys.base_prefix)')/include/p*`
+#!/bin/bash -e
+[[ -e $SOURCEDIR/bindings ]] && { XROOTD_V4=True; XROOTD_PYTHON=True; } || XROOTD_PYTHON=False
+PYTHON_EXECUTABLE=$( $(realpath $(command which python3)) -c 'import sys; print(sys.executable)' )
+PYTHON_VER=$( ${PYTHON_EXECUTABLE} -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")' )
 
 export CFLAGS="-fPIC -O2"
 export CXXFLAGS="-fPIC -O2 -std=c++17"
@@ -53,27 +52,29 @@ esac
 
 rsync -a --delete $SOURCEDIR/ $BUILDDIR
 
-[ x"$XROOTD_V4" = x"True" ] && sed -i.bak 's/"uuid.h"/"uuid\/uuid.h"/' $(find . -name "*Macaroon*Handler*.cc")
-
+if [ x"$XROOTD_V4" = x"True" ]; then
+    sed -i.bak 's/"uuid.h"/"uuid\/uuid.h"/' $(find . -name "*Macaroon*Handler*.cc")
+    sed -i.bak '/^\s*--force-reinstall \\/s/--force-reinstall/--force-reinstall --ignore-installed/' "${BUILDDIR}/bindings/python/CMakeLists.txt"
+fi
 
 mkdir build
 pushd build
 
-cmake -S "$BUILDDIR" -B "$BUILDDIR/build"                             \
+cmake "$BUILDDIR"                                                     \
+      ${CMAKE_GENERATOR:+-G "$CMAKE_GENERATOR"}                       \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                             \
       -DCMAKE_INSTALL_LIBDIR=lib                                      \
-      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                              \
       -DENABLE_CRYPTO=ON                                              \
+      -DENABLE_PERL=OFF                                               \
+      -DVOMSXRD_SUBMODULE=OFF                                         \
       ${XROOTD_PYTHON:+-DENABLE_PYTHON=ON}                            \
       ${XROOTD_PYTHON:+-DPYTHON_EXECUTABLE=$PYTHON_EXECUTABLE}        \
-      ${XROOTD_PYTHON:+-DPYTHON_LIBRARY=$PYTHON_LIBRARY}              \
-      ${XROOTD_PYTHON:+-DPYTHON_INCLUDE_DIR=$PYTHON_INCLUDE_DIR}      \
       ${UUID_ROOT:+-DUUID_LIBRARIES=$UUID_ROOT/lib/libuuid.so}        \
       ${UUID_ROOT:+-DUUID_LIBRARY=$UUID_ROOT/lib/libuuid.so}          \
       ${UUID_ROOT:+-DUUID_INCLUDE_DIRS=$UUID_ROOT/include}            \
       ${UUID_ROOT:+-DUUID_INCLUDE_DIR=$UUID_ROOT/include}             \
-      -DENABLE_KRB5=ON                                                \
-      -DENABLE_READLINE=ON                                            \
+      -DENABLE_KRB5=OFF                                                \
+      -DENABLE_READLINE=OFF                                            \
       -DCMAKE_BUILD_TYPE=RelWithDebInfo                               \
       ${OPENSSL_ROOT:+-DOPENSSL_ROOT_DIR=$OPENSSL_ROOT}               \
       ${ZLIB_ROOT:+-DZLIB_ROOT=$ZLIB_ROOT}                            \
@@ -96,39 +97,32 @@ then
   pushd $INSTALLROOT
     pushd lib
     if [ -d ../lib64 ]; then
-      ln -s ../lib64/python* python
+      ln -s ../lib64/python${PYTHON_VER} python
     else
-      ln -s python* python
+      ln -s python${PYTHON_VER} python
     fi
     popd
   popd
 fi
 
+case $ARCHITECTURE in
+  osx*)
+    find $INSTALLROOT/lib/python/ -name "*.so" -exec install_name_tool -add_rpath ${INSTALLROOT}/lib {} \;
+    find $INSTALLROOT/lib/ -name "*.dylib" -exec install_name_tool -add_rpath ${INSTALLROOT}/lib {} \;
+  ;;
+esac
+
 # Modulefile
 MODULEDIR="$INSTALLROOT/etc/modulefiles"
 MODULEFILE="$MODULEDIR/$PKGNAME"
 mkdir -p "$MODULEDIR"
-cat > "$MODULEFILE" <<EoF
-#%Module1.0
-proc ModulesHelp { } {
-  global version
-  puts stderr "ALICE Modulefile for $PKGNAME $PKGVERSION-@@PKGREVISION@$PKGHASH@@"
-}
-set version $PKGVERSION-@@PKGREVISION@$PKGHASH@@
-module-whatis "ALICE Modulefile for $PKGNAME $PKGVERSION-@@PKGREVISION@$PKGHASH@@"
-# Dependencies
-module load BASE/1.0 \
-            ${GCC_TOOLCHAIN_REVISION:+GCC-Toolchain/$GCC_TOOLCHAIN_VERSION-$GCC_TOOLCHAIN_REVISION}     \\
-            ${OPENSSL_REVISION:+OpenSSL/$OPENSSL_VERSION-$OPENSSL_REVISION}                             \\
-            ${LIBXML2_REVISION:+libxml2/$LIBXML2_VERSION-$LIBXML2_REVISION}                             \\
-            ${ALIEN_RUNTIME_REVISION:+AliEn-Runtime/$ALIEN_RUNTIME_VERSION-$ALIEN_RUNTIME_REVISION}
 
-# Our environment
-set XROOTD_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
-prepend-path PATH \$XROOTD_ROOT/bin
-prepend-path LD_LIBRARY_PATH \$XROOTD_ROOT/lib
+alibuild-generate-module --bin --lib > "$MODULEFILE"
+
+cat >> "$MODULEFILE" <<EoF
 if { $XROOTD_PYTHON } {
-  prepend-path PYTHONPATH \${XROOTD_ROOT}/lib/python/site-packages
+  prepend-path PYTHONPATH \$PKG_ROOT/lib/python/site-packages
+  # This is probably redundant, but should not harm.
   module load ${PYTHON_REVISION:+Python/$PYTHON_VERSION-$PYTHON_REVISION}                                 \\
               ${PYTHON_MODULES_REVISION:+Python-modules/$PYTHON_MODULES_VERSION-$PYTHON_MODULES_REVISION}
 }
