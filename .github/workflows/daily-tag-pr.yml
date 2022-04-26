@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     # For pushes to rc/flp-suite-*, DON'T open a PR.
-    if: ${{ !github.event.deleted && !startsWith(github.ref, 'refs/heads/rc/flp-suite-') }}
+    if: ${{ !github.deleted && !startsWith(github.ref, 'refs/heads/rc/flp-suite-') }}
 
     steps:
       - name: Get rc branch
@@ -23,7 +23,7 @@ jobs:
           echo "::set-output name=base::${GITHUB_REF#refs/heads/rc/}"
 
       - name: Send pull request to regular branch
-        uses: repo-sync/pull-request@v2.5
+        uses: repo-sync/pull-request@v2
         with:
           destination_branch: ${{ steps.name.outputs.base }}
           pr_title: 'daily tags: auto-update dist definitions'
