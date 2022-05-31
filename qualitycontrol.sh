@@ -1,6 +1,6 @@
 package: QualityControl
 version: "%(tag_basename)s"
-tag: v1.55.0
+tag: v1.60.0
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"
@@ -11,7 +11,7 @@ requires:
   - O2
   - arrow
   - Control-OCCPlugin
-  - Python-modules
+  - Python-modules:(?!osx_arm64)
   - libjalienO2
 build_requires:
   - CMake

@@ -5,6 +5,8 @@ env:
   CXXSTD: '17'
   ENABLE_VMC: 'ON'
   GEANT4_BUILD_MULTITHREADED: 'ON'
+disable:
+  - mesos
 overrides:
   AliPhysics:
     version: '%(commit_hash)s_O2'
