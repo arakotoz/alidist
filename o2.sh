@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: "nightly-20220426"
+tag: "nightly-20220531"
 requires:
   - arrow
   - FairRoot
@@ -26,6 +26,7 @@ requires:
   - VecGeom
   - FFTW3
   - ONNXRuntime
+  - MLModels
 build_requires:
   - GMP
   - MPFR
@@ -247,7 +248,8 @@ module load BASE/1.0 \\
             ${CURL_REVISION:+curl/$CURL_VERSION-$CURL_REVISION}                                     \\
             ${FAIRMQ_REVISION:+FairMQ/$FAIRMQ_VERSION-$FAIRMQ_REVISION}                             \\
             ${FFTW3_REVISION:+FFTW3/$FFTW3_VERSION-$FFTW3_REVISION}                                 \\
-            ${ONNXRUNTIME_REVISION:+ONNXRuntime/$ONNXRUNTIME_VERSION-$ONNXRUNTIME_REVISION}
+            ${ONNXRUNTIME_REVISION:+ONNXRuntime/$ONNXRUNTIME_VERSION-$ONNXRUNTIME_REVISION}         \\
+            ${MLMODELS_REVISION:+MLModels/$MLMODELS_VERSION-$MLMODELS_REVISION}
 # Our environment
 set O2_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
 setenv O2_ROOT \$O2_ROOT
@@ -261,6 +263,21 @@ $([[ ${ARCHITECTURE:0:3} == osx && ! $BOOST_VERSION ]] && echo "prepend-path ROO
 prepend-path ROOT_INCLUDE_PATH \$O2_ROOT/include/GPU
 prepend-path ROOT_INCLUDE_PATH \$O2_ROOT/include
 EoF
+
+case $ARCHITECTURE in
+  osx*);;
+  *)
+cat >> etc/modulefiles/$PKGNAME <<EoF
+# ALICE specific adjustments to speedup ROOT launches
+set searchpath [exec env LD_DEBUG=libs LD_PRELOAD=DOESNOTEXIST /bin/true |& sed -rn {/system search path/{s/.*search path=(.*)[[:space:]]+\(system search path\)$/\1/p; q}}]
+set includepath [exec env LC_ALL=C c++ -xc++ -E -v /dev/null |& sed -rn {/^.include/,\$s/^ (\/.*\+\+.*)/\1/p}]
+set includepath [string map {"\n" :} \$includepath]
+setenv ROOT_LDSYSPATH \$searchpath
+setenv ROOT_CPPSYSINCL \$includepath
+EoF
+    ;;
+esac
+
 mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INSTALLROOT/etc/modulefiles
 
 if [[ $ALIBUILD_O2_TESTS ]]; then

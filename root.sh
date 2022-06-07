@@ -1,7 +1,7 @@
 package: ROOT
 version: "%(tag_basename)s"
-tag: "v6-24-06"
-source: https://github.com/root-project/root.git
+tag: "v6-24-06-patches-alice1"
+source: https://github.com/alisw/root.git
 requires:
   - arrow
   - AliEn-Runtime:(?!.*ppc64)
@@ -9,7 +9,7 @@ requires:
   - opengl:(?!osx)
   - Xdevel:(?!osx)
   - FreeType:(?!osx)
-  - Python-modules
+  - Python-modules:(?!osx_arm64)
   - "GCC-Toolchain:(?!osx)"
   - libpng
   - lzma
