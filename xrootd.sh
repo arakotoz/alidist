@@ -47,9 +47,9 @@ case $ARCHITECTURE in
     # This fix is needed only on MacOS when building XRootD Python bindings.
     export CFLAGS="${CFLAGS} -isysroot $(xcrun --show-sdk-path)"
     unset UUID_ROOT
-    SETUPTOOLS_VER=$(python3 -m pip show setuptools | grep Version | sed -e 's/[^0-9]*//')
-    if [ x"$SETUPTOOLS_VER" != x"60.8.2" ]; then
-	printf "Please install setuptools==60.8.2"; exit 1
+    if [ "$(python3 -c 'import setuptools; print(setuptools.__version__)')" != "60.8.2" ]; then
+      echo 'Please install setuptools==60.8.2'
+      exit 1
     fi
   ;;
 esac
@@ -64,6 +64,7 @@ cmake "$BUILDDIR"                                                     \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                             \
       ${CMAKE_FRAMEWORK_PATH+-DCMAKE_FRAMEWORK_PATH=$CMAKE_FRAMEWORK_PATH} \
       -DCMAKE_INSTALL_LIBDIR=lib                                      \
+      -DXRDCL_ONLY=ON                                                 \
       -DENABLE_CRYPTO=ON                                              \
       -DENABLE_PERL=OFF                                               \
       -DVOMSXRD_SUBMODULE=OFF                                         \
