@@ -1,7 +1,7 @@
 package: EVTGEN
 version: "%(tag_basename)s"
-tag: "R01-06-00"
-source: https://github.com/PMunkes/evtgen.git
+tag: "R01-06-00b"
+source: https://github.com/arakotoz/evtgen.git
 requires:
   - HepMC
   - pythia
@@ -17,7 +17,7 @@ env:
 rsync -a --delete --exclude '**/.git' $SOURCEDIR/ ./
 
 # adjust the configure scripts
-sed -i -e "s/FLIBS=.*$/FLIBS=\"-lgfortran\"/" configure
+#sed -i -e "s/FLIBS=.*$/FLIBS=\"-lgfortran\"/" configure
 sed -i -e "s/PYTHIALIBLIST=.*$/PYTHIALIBLIST=\"-lpythia8 -lpythia8lhapdf6\"/" configure
 
 export HEPMCLOCATION="$HEPMC_ROOT"
