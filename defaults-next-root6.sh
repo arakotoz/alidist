@@ -3,10 +3,10 @@ version: v1
 disable:
   - arrow
 env:
-  CXXFLAGS: "-fPIC -g -O2 -std=c++11"
+  CXXFLAGS: "-fPIC -g -O2 -std=c++17"
   CFLAGS: "-fPIC -g -O2"
   CMAKE_BUILD_TYPE: "RELWITHDEBINFO"
-  CXXSTD: "11"
+  CXXSTD: '17'
 overrides:
   AliRoot:
     version: "%(tag_basename)s_ROOT6"
