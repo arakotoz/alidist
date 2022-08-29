@@ -7,6 +7,7 @@ env:
   GEANT4_BUILD_MULTITHREADED: 'ON'
 disable:
   - mesos
+  - MySQL
 overrides:
   AliPhysics:
     version: '%(commit_hash)s_O2'

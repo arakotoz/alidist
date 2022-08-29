@@ -4,6 +4,7 @@ tag: "v.3.64"
 source: https://github.com/arakotoz/PHOTOS.git
 requires:
   - HepMC
+  - HepMC3
 build_requires:
   - "autotools:(slc6|slc7)"
   - alibuild-recipe-tools
@@ -12,7 +13,7 @@ build_requires:
 rsync -a --delete --exclude '**/.git' $SOURCEDIR/ ./
 
 autoreconf -ifv
-./configure --prefix $INSTALLROOT --with-hepmc="$HEPMC_ROOT"
+./configure --prefix $INSTALLROOT --with-hepmc="$HEPMC_ROOT" --with-hepmc3="$HEPMC3_ROOT"
 make -j$JOBS
 make install
 
