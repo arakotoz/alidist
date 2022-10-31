@@ -1,10 +1,9 @@
 package: Monitoring
 version: "%(tag_basename)s"
-tag: v3.13.2
+tag: v3.14.0
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"
-  - "ApMon-CPP:(?!osx)"
   - curl
   - libInfoLogger
 build_requires:
