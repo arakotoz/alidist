@@ -40,14 +40,10 @@ overrides:
     tag: "v10.2.0-alice2"
   Python-modules-list:
     env:
-      PIP_REQUIREMENTS: |
-        requests==2.21.0
-        dryable==1.0.3
-        responses==0.10.6
-        PyYAML==5.1
-        python-consul==1.1.0
-        psutil==5.8.0
-        setuptools<=65.5.1
+      PIP36_REQUIREMENTS: |
+        setuptools==59.6.0
+      PIP39_REQUIREMENTS: |
+        setuptools==65.5.1
   O2-customization:
     env:
       ENABLE_UPGRADES: OFF # Disable detector upgrades in O2
