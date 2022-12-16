@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: "nightly-20221129"
+tag: "nightly-20221216"
 requires:
   - arrow
   - FairRoot
@@ -33,6 +33,7 @@ build_requires:
   - googlebenchmark
   - O2-customization
   - Clang:(?!osx*)
+  - ITSResponse
 source: https://github.com/AliceO2Group/AliceO2
 env:
   VMCWORKDIR: "$O2_ROOT/share"
