@@ -1,6 +1,5 @@
 ---
 name: Clean PR checks
-
 'on':
   workflow_dispatch:
     inputs:
@@ -8,7 +7,7 @@ name: Clean PR checks
         description: PR to be cleaned
         required: true
       checks:
-        description: Checks to be cleaned
+        description: Checks to be cleaned (comma- or space-separated)
         required: true
         default: >-
           build/alidist/O2Suite/o2/macOS-arm
@@ -32,7 +31,6 @@ name: Clean PR checks
 jobs:
   cleanup_pr_checks:
     runs-on: ubuntu-latest
-
     steps:
       - name: Set up Python 3
         uses: actions/setup-python@v4
@@ -41,17 +39,15 @@ jobs:
 
       - name: Install ali-bot
         run: |
-          sudo apt-get update
-          sudo apt-get install libsasl2-dev python-dev libldap2-dev libssl-dev
           python3 -m pip install git+https://github.com/alisw/ali-bot@master
 
       - uses: octokit/graphql-action@v2.x
         id: last_commit
         with:
           query: |
-            query latest_commit($owner: String!, $repo: String!, $pull: Int!) {
-              repository(owner: $owner, name: $repo) {
-                pullRequest(number: $pull) {
+            query last_commit($owner: String!, $name: String!, $pr: Int!) {
+              repository(owner: $owner, name: $name) {
+                pullRequest(number: $pr) {
                   commits(last: 1) {
                     nodes {
                       commit {
@@ -63,19 +59,22 @@ jobs:
               }
             }
           owner: ${{ github.event.inputs.owner }}
-          repo: ${{ github.event.inputs.repo }}
-          pull: ${{ github.event.inputs.pr }}
+          name: ${{ github.event.inputs.repo }}
+          pr: ${{ github.event.inputs.pr }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cleanup tests
         run: |
           set -x
-          for check in ${CHECKS//,/ }; do
-            set-github-status -c "$REPO@$COMMIT" -s "$check/pending"
+          commit=$(jq -r '.repository.pullRequest.commits.nodes[].commit.oid' <<\EOF
+          ${{ steps.last_commit.outputs.data }}
+          EOF
+          )
+          echo "$CHECKS" | tr -s '[:space:],' '\n' | while read -r check; do
+            set-github-status -c "$REPO@$commit" -s "$check/pending"
           done
         env:
-          CHECKS: ${{ github.event.inputs.checks }}
-          REPO: ${{ github.event.inputs.owner }}/${{ github.event.inputs.repo }}
-          COMMIT: ${{ fromJSON(steps.last_commit.outputs.data).repository.pullRequest.commits.nodes[0].commit.oid }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.event.inputs.owner }}/${{ github.event.inputs.repo }}
+          CHECKS: ${{ github.event.inputs.checks }}
