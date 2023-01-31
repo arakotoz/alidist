@@ -1,7 +1,7 @@
 package: EVTGEN
 version: "%(tag_basename)s"
 tag: "R02-02-00"
-source:  https://phab.hepforge.org/source/evtgen
+source: https://github.com/alisw/EVTGEN
 requires:
   - HepMC
   - pythia
@@ -11,12 +11,13 @@ build_requires:
   - alibuild-recipe-tools
   - "GCC-Toolchain:(?!osx)"
 env:
-   EVTGENDATA: "$EVTGEN_ROOT/share"
+  EVTGENDATA: "$EVTGEN_ROOT/share"
 ---
 #!/bin/bash -e
 rsync -a --delete --exclude '**/.git' $SOURCEDIR/ ./
 
 cmake $SOURCEDIR -DCMAKE_INSTALL_PREFIX=$INSTALLROOT \
+      -DCMAKE_INSTALL_LIBDIR=lib \
       -DEVTGEN_HEPMC3=OFF \
       -DHEPMC2_ROOT_DIR=$HEPMC_ROOT \
       -DEVTGEN_PYTHIA=ON \

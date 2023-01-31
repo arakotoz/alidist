@@ -1,12 +1,12 @@
 package: AliGenerators
 version: "v%(year)s%(month)s%(day)s"
-tag: "vAN-20220905"
+tag: "vAN-20220930"
 source: https://github.com/alisw/AliGenerators
 requires:
   - AMPT
-  - CRMC:(?!osx)
+  - CRMC
   - DPMJET
-  - EPOS:(?!osx)
+  - EPOS
   - Herwig:(?!osx)
   - JEWEL
   - POWHEG
@@ -22,6 +22,7 @@ requires:
   - Rivet
   - lhapdf-pdfsets
   - JETSCAPE
+  - EPOS4
 build_requires:
   - EPOS-test:(?!osx)
   - alibuild-recipe-tools
