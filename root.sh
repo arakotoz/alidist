@@ -64,6 +64,7 @@ unset LDFLAGS
 SONAME=so
 case $ARCHITECTURE in
   osx*)
+    unset LLVM_DIR
     ENABLE_COCOA=1
     DISABLE_MYSQL=1
     COMPILER_CC=clang
@@ -251,3 +252,10 @@ mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INS
 cat > $INSTALLROOT/.rpm-extra-deps <<EoF
 glibc-headers
 EoF
+
+case $ARCHITECTURE in
+  osx*)
+    unset LLVM_DIR
+    export LLVM_DIR=$(brew --prefix llvm)/lib/cmake
+  ;;
+esac
