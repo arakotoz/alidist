@@ -1,6 +1,6 @@
 package: XRootD
 version: "%(tag_basename)s"
-tag: "v5.5.1a"
+tag: "v5.5.2a"
 source: https://github.com/arakotoz/xrootd
 requires:
  - "OpenSSL:(?!osx)"
@@ -22,6 +22,8 @@ XROOTD_PYTHON=""
 [[ -e ${SOURCEDIR}/bindings ]] && XROOTD_PYTHON=True;
 PYTHON_EXECUTABLE=$(/usr/bin/env python3 -c 'import sys; print(sys.executable)')
 PYTHON_VER=$( ${PYTHON_EXECUTABLE} -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")' )
+PYTHON_LIBRARY=`find $( ${PYTHON_EXECUTABLE} -c 'import sys; print(sys.base_prefix)')/lib -name 'libpython*.dylib'`
+PYTHON_INCLUDE_DIR=`ls -d $( ${PYTHON_EXECUTABLE} -c 'import sys; print(sys.base_prefix)')/include/p*`
 
 export CFLAGS="-fPIC -O2"
 export CXXFLAGS="-fPIC -O2 -std=c++17"
@@ -37,7 +39,7 @@ case $ARCHITECTURE in
     # NOTE: Python from Homebrew will have a hardcoded sysroot pointing to Xcode.app directory wchich might not exist.
     # This seems to be a robust way to discover a working SDK path and present it to Python setuptools.
     # This fix is needed only on MacOS when building XRootD Python bindings.
-    export CFLAGS="${CFLAGS} -isysroot $(xcrun --show-sdk-path)"
+    export CFLAGS="${CFLAGS} -fPIC -O2 -isysroot $(xcrun --show-sdk-path)"
     unset UUID_ROOT
   ;;
   osx_arm64)
@@ -55,6 +57,10 @@ case $ARCHITECTURE in
     fi
   ;;
 esac
+
+CC=/usr/bin/clang
+CXX=/usr/bin/clang++
+CMAKE_OSX_SYSROOT="$(xcrun --show-sdk-path)"
 
 rsync -a --delete ${SOURCEDIR}/ ${BUILDDIR}
 
@@ -80,9 +86,14 @@ cmake "${BUILDDIR}"                                                   \
       ${ZLIB_ROOT:+-DZLIB_ROOT=$ZLIB_ROOT}                            \
       ${XROOTD_PYTHON:+-DENABLE_PYTHON=ON}                            \
       ${XROOTD_PYTHON:+-DPYTHON_EXECUTABLE=$PYTHON_EXECUTABLE}        \
-      ${XROOTD_PYTHON:+-DXROOTD_PYBUILD_ENV='CC=c++ CFLAGS=\"-std=c++17\"'}       \
+      ${XROOTD_PYTHON:+-DPYTHON_LIBRARY=$PYTHON_LIBRARY}              \
+      ${XROOTD_PYTHON:+-DPYTHON_INCLUDE_DIR=$PYTHON_INCLUDE_DIR}      \
+      ${XROOTD_PYTHON:+-DXROOTD_PYBUILD_ENV='CC=/usr/bin/clang++ CFLAGS=\"-std=c++17\"'}       \
       ${XROOTD_PYTHON:+-DPIP_OPTIONS='--force-reinstall --ignore-installed -v'}   \
-      -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="-Wno-error"
+      -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="-Wno-error"                   \
+      -DCMAKE_C_COMPILER=$CC                                          \
+      -DCMAKE_CXX_COMPILER=$CXX                                       \
+      -DCMAKE_OSX_SYSROOT=$CMAKE_OSX_SYSROOT
 
 #make -i ${JOBS+-j $JOBS}; make install
 cmake --build . -- ${JOBS:+-j$JOBS} install
@@ -123,6 +134,9 @@ if [[ x"$XROOTD_PYTHON" == x"True" ]]; then
     # just run the the command as this is under "bash -e"
     echo -ne ">>>>>>   Found XRootD python bindings: "
     LD_LIBRARY_PATH="$INSTALLROOT/lib${LD_LIBRARY_PATH:+:}$LD_LIBRARY_PATH" PYTHONPATH="$INSTALLROOT/lib/python/site-packages${PYTHONPATH:+:}$PYTHONPATH" ${PYTHON_EXECUTABLE} -c 'from XRootD import client as xrd_client;print(f"{xrd_client.__version__}\n{xrd_client.__file__}");'
+    echo
+    echo "LD_LIBRARY_PATH = " $LD_LIBRARY_PATH
+    echo "PYTHONPATH " = $PYTHONPATH
     echo
 
 fi  # end of PYTHON part
