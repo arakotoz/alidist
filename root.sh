@@ -73,7 +73,14 @@ case $ARCHITECTURE in
     SONAME=dylib
     [[ ! $GSL_ROOT ]] && GSL_ROOT=$(brew --prefix gsl)
     [[ ! $OPENSSL_ROOT ]] && SYS_OPENSSL_ROOT=$(brew --prefix openssl@1.1)
+    export PKG_CONFIG_PATH=${SYS_OPENSSL_ROOT}/lib/pkgconfig
     [[ ! $LIBPNG_ROOT ]] && LIBPNG_ROOT=$(brew --prefix libpng)
+    export NumPy_INCLUDE_DIRS=$(python3 -c "import numpy; print(numpy.get_include())")
+    export LDFLAGS="-L$(brew --prefix openssl@1.1)/lib $LDFLAGS"
+    export CPPFLAGS="-I$(brew --prefix openssl@1.1)/include $CPPFLAGS"
+    export PATH=${SYS_OPENSSL_ROOT}/bin:${PATH}
+    export LD_LIBRARY_PATH=${SYS_OPENSSL_ROOT}/lib:${LD_LIBRARY_PATH}
+    export OPENSSL_INCLUDE_DIR=${SYS_OPENSSL_ROOT}/include
   ;;
 esac
 
@@ -172,6 +179,7 @@ cmake $SOURCEDIR                                                                
       ${DISABLE_MYSQL:+-Dmysql=OFF}                                                    \
       ${ROOT_HAS_PYTHON:+-DPYTHON_PREFER_VERSION=3}                                    \
       ${PYTHON_EXECUTABLE:+-DPYTHON_EXECUTABLE="${PYTHON_EXECUTABLE}"}                 \
+      ${ROOT_HAS_PYTHON:+-DPython3_NumPy_INCLUDE_DIR="${NumPy_INCLUDE_DIRS}"}          \
 -DCMAKE_PREFIX_PATH="$FREETYPE_ROOT;$SYS_OPENSSL_ROOT;$GSL_ROOT;$ALIEN_RUNTIME_ROOT;$PYTHON_ROOT;$PYTHON_MODULES_ROOT;$LIBPNG_ROOT;$LZMA_ROOT;$PROTOBUF_ROOT"
 
 FEATURES="builtin_pcre mathmore xml ssl opengl minuit2 http
