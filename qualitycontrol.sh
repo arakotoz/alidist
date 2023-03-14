@@ -1,6 +1,6 @@
 package: QualityControl
 version: "%(tag_basename)s"
-tag: v1.91.0
+tag: v1.93.0
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"
@@ -13,8 +13,10 @@ requires:
   - Control-OCCPlugin
   - Python-modules:(?!osx_arm64)
   - libjalienO2
+  - bookkeeping-api
 build_requires:
   - CMake
+  - "Clang:(?!osx)"   # for Gandiva
   - CodingGuidelines
   - RapidJSON
   - alibuild-recipe-tools
@@ -74,12 +76,14 @@ cmake $SOURCEDIR                                              \
       -DO2_ROOT=$O2_ROOT                                      \
       -DMS_GSL_INCLUDE_DIR=$MS_GSL_ROOT/include               \
       -DARROW_HOME=$ARROW_ROOT                                \
+      ${CLANG_ROOT:+-DLLVM_ROOT="$CLANG_ROOT"}                \
       ${CONTROL_OCCPLUGIN_REVISION:+-DOcc_ROOT=$CONTROL_OCCPLUGIN_ROOT}                      \
       ${CXXSTD:+-DCMAKE_CXX_STANDARD=$CXXSTD}                 \
       ${OPENSSL_ROOT_DIR:+-DOPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR}          \
       ${LIBUV_ROOT:+-DLibUV_INCLUDE_DIR=$LIBUV_ROOT/include}             \
       ${LIBUV_ROOT:+-DLibUV_LIBRARY=$LIBUV_ROOT/lib/libuv.$SONAME}       \
       ${LIBJALIENO2_ROOT:+-DlibjalienO2_ROOT=$LIBJALIENO2_ROOT}          \
+      ${BOOKKEEPING_API_REVISION:+-DBookkeepingApi_ROOT=$BOOKKEEPINGAPI_ROOT}                 \
       -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 cp ${BUILDDIR}/compile_commands.json ${INSTALLROOT}
