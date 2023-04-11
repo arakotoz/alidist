@@ -10,6 +10,7 @@ env:
   GEANT4_BUILD_MULTITHREADED: 'ON'
 disable:
   - O2Physics
+  - KFParticle
   - OpenSSL
   - curl
   - mesos
@@ -28,8 +29,8 @@ overrides:
       - ZeroMQ
       - JAliEn-ROOT
   GCC-Toolchain:
-    version: v10.2.0-alice2
-    tag: v10.2.0-alice2
+    version: v12.2.0-alice1
+    tag: v12.2.0-alice1
   cgal:
     version: 4.12.2
   fastjet:
