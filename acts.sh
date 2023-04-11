@@ -1,18 +1,26 @@
 package: ACTS
 version: v23.4.0
+requires:
+  - ROOT
+  - pythia
 build_requires:
-    - "GCC-Toolchain:(?!osx)"
-    - CMake
-    - boost
-    - Eigen3
-    - alibuild-recipe-tools
-source: https://github.com/acts-project/acts.git
+  - "GCC-Toolchain:(?!osx)"
+  - CMake
+  - boost
+  - Eigen3
+  - alibuild-recipe-tools
+source: https://github.com/AliceO2Group/acts.git
 ---
 #!/bin/bash -ex
 cmake $SOURCEDIR -DCMAKE_INSTALL_PREFIX=$INSTALLROOT       \
                  -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE      \
                  -DCMAKE_SKIP_RPATH=TRUE                   \
-                 -DACTS_BUILD_EXAMPLES=OFF
+                 -DACTS_BUILD_FATRAS=ON                    \
+                 -DACTS_BUILD_EXAMPLES=ON                  \
+                 -DACTS_BUILD_EXAMPLES_PYTHON_BINDINGS=ON  \
+                 -DACTS_BUILD_EXAMPLES_PYTHIA8=ON          \
+                 -DCMAKE_PREFIX_PATH=${PYTHIA_ROOT}
+
 
 cmake --build . -- ${JOBS:+-j$JOBS} install
 

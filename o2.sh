@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: "nightly-20230314"
+tag: "nightly-20230411"
 requires:
   - arrow
   - FairRoot
@@ -26,6 +26,7 @@ requires:
   - FFTW3
   - ONNXRuntime
   - MLModels
+  - KFParticle
 build_requires:
   - GMP
   - MPFR
