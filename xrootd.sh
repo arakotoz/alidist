@@ -4,7 +4,7 @@ tag: "v5.5.3a"
 source: https://github.com/arakotoz/xrootd
 requires:
   - "OpenSSL:(?!osx)"
-  - Python-modules:(?!osx_arm64)
+  - Python-modules
   - AliEn-Runtime
   - libxml2
 build_requires:
@@ -24,6 +24,14 @@ PYTHON_EXECUTABLE=$(/usr/bin/env python3 -c 'import sys; print(sys.executable)')
 PYTHON_VER=$( ${PYTHON_EXECUTABLE} -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")' )
 PYTHON_LIBRARY=`find $( ${PYTHON_EXECUTABLE} -c 'import sys; print(sys.base_prefix)')/lib -name 'libpython*.dylib'`
 PYTHON_INCLUDE_DIR=`ls -d $( ${PYTHON_EXECUTABLE} -c 'import sys; print(sys.base_prefix)')/include/p*`
+
+# Report versions of pip and setuptools
+echo "###################
+pip version:
+$(python3 -m pip -V)
+setuptools version:
+$(python3 -m pip show setuptools | grep 'Version\|Location')
+###################"
 
 case $ARCHITECTURE in
   osx_x86-64)
@@ -45,10 +53,6 @@ case $ARCHITECTURE in
     # This fix is needed only on MacOS when building XRootD Python bindings.
     export CFLAGS="${CFLAGS} -isysroot $(xcrun --show-sdk-path)"
     unset UUID_ROOT
-    if [ "$(python3 -c 'import setuptools; print(setuptools.__version__)')" != "60.8.2" ]; then
-      echo 'Please install setuptools==60.8.2'
-      exit 1
-    fi
   ;;
 esac
 

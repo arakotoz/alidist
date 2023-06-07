@@ -1,6 +1,6 @@
 package: ROOT
 version: "%(tag_basename)s"
-tag: "v6-28-02"
+tag: "v6-28-04"
 source: https://github.com/root-project/root.git
 requires:
   - arrow
@@ -9,7 +9,7 @@ requires:
   - opengl:(?!osx)
   - Xdevel:(?!osx)
   - FreeType:(?!osx)
-  - Python-modules:(?!osx_arm64)
+  - Python-modules
   - "GCC-Toolchain:(?!osx)"
   - libpng
   - lzma
