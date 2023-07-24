@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: "daily-20230607-0200"
+tag: "daily-20230724-0200"
 requires:
   - arrow
   - FairRoot
@@ -27,10 +27,10 @@ requires:
   - ONNXRuntime
   - MLModels
   - KFParticle
+  - RapidJSON
 build_requires:
   - GMP
   - MPFR
-  - RapidJSON
   - googlebenchmark
   - O2-customization
   - Clang:(?!osx*)
@@ -199,7 +199,7 @@ cmake $SOURCEDIR -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                            
       ${ARROW_ROOT:+-DArrow_DIR=$ARROW_ROOT/lib/cmake/Arrow}                                              \
       ${ARROW_ROOT:+${CLANG_ROOT:+-DLLVM_ROOT=$CLANG_ROOT}}                                               \
       ${ITSRESPONSE_ROOT:+-DITSRESPONSE=${ITSRESPONSE_ROOT}}
-# LLVM_ROOT is required for Gandiva.
+# LLVM_ROOT is required for Gandiva
 
 cmake --build . -- ${JOBS+-j $JOBS} install
 
@@ -253,6 +253,7 @@ module load BASE/1.0 \\
             ${FAIRMQ_REVISION:+FairMQ/$FAIRMQ_VERSION-$FAIRMQ_REVISION}                             \\
             ${FFTW3_REVISION:+FFTW3/$FFTW3_VERSION-$FFTW3_REVISION}                                 \\
             ${ONNXRUNTIME_REVISION:+ONNXRuntime/$ONNXRUNTIME_VERSION-$ONNXRUNTIME_REVISION}         \\
+            ${RAPIDJSON_REVISION:+RapidJSON/$RAPIDJSON_VERSION-$RAPIDJSON_REVISION}                 \\
             ${MLMODELS_REVISION:+MLModels/$MLMODELS_VERSION-$MLMODELS_REVISION}
 # Our environment
 set O2_ROOT \$::env(BASEDIR)/$PKGNAME/\$version

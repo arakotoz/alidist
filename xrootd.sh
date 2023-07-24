@@ -1,6 +1,6 @@
 package: XRootD
 version: "%(tag_basename)s"
-tag: "v5.5.3a"
+tag: "v5.6.1"
 source: https://github.com/arakotoz/xrootd
 requires:
   - "OpenSSL:(?!osx)"
@@ -33,6 +33,10 @@ setuptools version:
 $(python3 -m pip show setuptools | grep 'Version\|Location')
 ###################"
 
+COMPILER_CC=cc
+COMPILER_CXX=c++
+COMPILER_LD=c++
+
 case $ARCHITECTURE in
   osx_x86-64)
     export ARCHFLAGS="-arch x86_64"
@@ -41,7 +45,10 @@ case $ARCHITECTURE in
     # NOTE: Python from Homebrew will have a hardcoded sysroot pointing to Xcode.app directory wchich might not exist.
     # This seems to be a robust way to discover a working SDK path and present it to Python setuptools.
     # This fix is needed only on MacOS when building XRootD Python bindings.
-    export CFLAGS="${CFLAGS} -fPIC -O2 -isysroot $(xcrun --show-sdk-path)"
+    export CFLAGS="${CFLAGS} -isysroot $(xcrun --show-sdk-path)"
+    COMPILER_CC=clang
+    COMPILER_CXX=clang++
+    COMPILER_LD=clang
     unset UUID_ROOT
   ;;
   osx_arm64)
@@ -53,6 +60,9 @@ case $ARCHITECTURE in
     # This fix is needed only on MacOS when building XRootD Python bindings.
     export CFLAGS="${CFLAGS} -isysroot $(xcrun --show-sdk-path)"
     unset UUID_ROOT
+    COMPILER_CC=clang
+    COMPILER_CXX=clang++
+    COMPILER_LD=clang
   ;;
 esac
 
@@ -66,18 +76,21 @@ mkdir build
 pushd build
 cmake "${BUILDDIR}"                                                   \
       ${CMAKE_GENERATOR:+-G "$CMAKE_GENERATOR"}                       \
+      -DCMAKE_CXX_COMPILER=$COMPILER_CXX                              \
+      -DCMAKE_C_COMPILER=$COMPILER_CC                                 \
+      -DCMAKE_LINKER=$COMPILER_LD                                     \
       -DCMAKE_INSTALL_PREFIX=${INSTALLROOT}                           \
       ${CMAKE_FRAMEWORK_PATH+-DCMAKE_FRAMEWORK_PATH=$CMAKE_FRAMEWORK_PATH} \
       -DCMAKE_INSTALL_LIBDIR=lib                                      \
       -DXRDCL_ONLY=ON                                                 \
-      -DENABLE_CRYPTO=ON                                              \
-      -DENABLE_PERL=OFF                                               \
-      -DVOMSXRD_SUBMODULE=OFF                                         \
       ${UUID_ROOT:+-DUUID_LIBRARIES=$UUID_ROOT/lib/libuuid.so}        \
       ${UUID_ROOT:+-DUUID_LIBRARY=$UUID_ROOT/lib/libuuid.so}          \
       ${UUID_ROOT:+-DUUID_INCLUDE_DIRS=$UUID_ROOT/include}            \
       ${UUID_ROOT:+-DUUID_INCLUDE_DIR=$UUID_ROOT/include}             \
       -DENABLE_KRB5=OFF                                               \
+      -DENABLE_FUSE=OFF                                               \
+      -DENABLE_VOMS=OFF                                               \
+      -DENABLE_XRDCLHTTP=OFF                                          \
       -DENABLE_READLINE=OFF                                           \
       -DCMAKE_BUILD_TYPE=RelWithDebInfo                               \
       ${OPENSSL_ROOT:+-DOPENSSL_ROOT_DIR=$OPENSSL_ROOT}               \
@@ -87,7 +100,7 @@ cmake "${BUILDDIR}"                                                   \
       ${XROOTD_PYTHON:+-DPYTHON_LIBRARY=$PYTHON_LIBRARY}              \
       ${XROOTD_PYTHON:+-DPYTHON_INCLUDE_DIR=$PYTHON_INCLUDE_DIR}      \
       ${XROOTD_PYTHON:+-DXROOTD_PYBUILD_ENV='CC=/usr/bin/clang++ CFLAGS=\"-std=c++17\"'}       \
-      ${XROOTD_PYTHON:+-DPIP_OPTIONS='--force-reinstall --ignore-installed -v'}   \
+      ${XROOTD_PYTHON:+-DPIP_OPTIONS='--force-reinstall --ignore-installed --verbose'}   \
       -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="-Wno-error"                   \
       -DCMAKE_C_COMPILER=$CC                                          \
       -DCMAKE_CXX_COMPILER=$CXX                                       \
