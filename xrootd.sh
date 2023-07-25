@@ -11,7 +11,7 @@ build_requires:
   - CMake
   - "osx-system-openssl:(osx.*)"
   - "GCC-Toolchain:(?!osx)"
-  - UUID:(?!osx)
+  - UUID
   - alibuild-recipe-tools
 prepend_path:
   PYTHONPATH: "${XROOTD_ROOT}/lib/python/site-packages"
@@ -49,7 +49,6 @@ case $ARCHITECTURE in
     COMPILER_CC=clang
     COMPILER_CXX=clang++
     COMPILER_LD=clang
-    unset UUID_ROOT
   ;;
   osx_arm64)
     [[ $OPENSSL_ROOT ]] || OPENSSL_ROOT=$(brew --prefix openssl@1.1)
@@ -59,16 +58,11 @@ case $ARCHITECTURE in
     # This seems to be a robust way to discover a working SDK path and present it to Python setuptools.
     # This fix is needed only on MacOS when building XRootD Python bindings.
     export CFLAGS="${CFLAGS} -isysroot $(xcrun --show-sdk-path)"
-    unset UUID_ROOT
     COMPILER_CC=clang
     COMPILER_CXX=clang++
     COMPILER_LD=clang
   ;;
 esac
-
-CC=/usr/bin/clang
-CXX=/usr/bin/clang++
-CMAKE_OSX_SYSROOT="$(xcrun --show-sdk-path)"
 
 rsync -a --delete ${SOURCEDIR}/ ${BUILDDIR}
 
@@ -101,10 +95,7 @@ cmake "${BUILDDIR}"                                                   \
       ${XROOTD_PYTHON:+-DPYTHON_INCLUDE_DIR=$PYTHON_INCLUDE_DIR}      \
       ${XROOTD_PYTHON:+-DXROOTD_PYBUILD_ENV='CC=/usr/bin/clang++ CFLAGS=\"-std=c++17\"'}       \
       ${XROOTD_PYTHON:+-DPIP_OPTIONS='--force-reinstall --ignore-installed --verbose'}   \
-      -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="-Wno-error"                   \
-      -DCMAKE_C_COMPILER=$CC                                          \
-      -DCMAKE_CXX_COMPILER=$CXX                                       \
-      -DCMAKE_OSX_SYSROOT=$CMAKE_OSX_SYSROOT
+      -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="-Wno-error"                   
 
 cmake --build . -- ${JOBS:+-j$JOBS} install
 popd
