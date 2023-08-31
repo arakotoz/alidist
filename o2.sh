@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: "daily-20230724-0200"
+tag: "daily-20230831-0200"
 requires:
   - arrow
   - FairRoot
@@ -29,6 +29,7 @@ requires:
   - KFParticle
   - RapidJSON
 build_requires:
+  - abseil
   - GMP
   - MPFR
   - googlebenchmark
