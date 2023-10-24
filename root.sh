@@ -78,12 +78,12 @@ case $ARCHITECTURE in
     COMPILER_LD=clang
     SONAME=dylib
     [[ ! $GSL_ROOT ]] && GSL_ROOT=$(brew --prefix gsl)
-    [[ ! $OPENSSL_ROOT ]] && SYS_OPENSSL_ROOT=$(brew --prefix openssl@1.1)
+    [[ ! $OPENSSL_ROOT ]] && SYS_OPENSSL_ROOT=$(brew --prefix openssl@3)
     export PKG_CONFIG_PATH=${SYS_OPENSSL_ROOT}/lib/pkgconfig
     [[ ! $LIBPNG_ROOT ]] && LIBPNG_ROOT=$(brew --prefix libpng)
     export NumPy_INCLUDE_DIRS=$(python3 -c "import numpy; print(numpy.get_include())")
-    export LDFLAGS="-L$(brew --prefix openssl@1.1)/lib $LDFLAGS"
-    export CPPFLAGS="-I$(brew --prefix openssl@1.1)/include $CPPFLAGS"
+    export LDFLAGS="-L$(brew --prefix openssl@3)/lib $LDFLAGS"
+    export CPPFLAGS="-I$(brew --prefix openssl@3)/include $CPPFLAGS"
     export PATH=${SYS_OPENSSL_ROOT}/bin:${PATH}
     export LD_LIBRARY_PATH=${SYS_OPENSSL_ROOT}/lib:${LD_LIBRARY_PATH}
     export OPENSSL_INCLUDE_DIR=${SYS_OPENSSL_ROOT}/include
