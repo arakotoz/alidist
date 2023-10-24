@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: "daily-20230831-0200"
+tag: "daily-20231024-0200"
 requires:
   - arrow
   - FairRoot
@@ -82,6 +82,9 @@ incremental_recipe: |
     if [[ ! $BOOST_VERSION && $ARCHITECTURE == osx* ]]; then
       export ROOT_INCLUDE_PATH=$(brew --prefix boost)/include:$ROOT_INCLUDE_PATH
     fi
+    if [[ -z $OPENSSL_REVISION && $ARCHITECTURE == osx* ]]; then
+      export ROOT_INCLUDE_PATH=$(brew --prefix openssl@3)/include:$ROOT_INCLUDE_PATH
+    fi
     export ROOT_INCLUDE_PATH=$INSTALLROOT/include:$INSTALLROOT/include/GPU:$ROOT_INCLUDE_PATH
     # Set Geant4 data sets environment
     if [[ "$G4INSTALL" != "" ]]; then
@@ -148,9 +151,7 @@ case $ARCHITECTURE in
     [[ ! $PROTOBUF_ROOT ]] && PROTOBUF_ROOT=`brew --prefix protobuf`
     [[ ! $GLFW_ROOT ]] && GLFW_ROOT=`brew --prefix glfw`
     [[ ! $FMT_ROOT ]] && FMT_ROOT=`brew --prefix fmt`
-    SONAME=dylib
   ;;
-  *) SONAME=so ;;
 esac
 
 # This affects only PR checkers
@@ -190,6 +191,8 @@ cmake $SOURCEDIR -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                            
       ${DISABLE_GPU:+-DENABLE_CUDA=OFF -DENABLE_HIP=OFF -DENABLE_OPENCL=OFF -DENABLE_OPENCL2=OFF}         \
       ${ALIBUILD_ENABLE_CUDA:+-DENABLE_CUDA=ON}                                                           \
       ${ALIBUILD_ENABLE_HIP:+-DENABLE_HIP=ON}                                                             \
+      ${ALIBUILD_O2_OVERRIDE_HIP_ARCHS:+-DHIP_AMDGPUTARGET=${ALIBUILD_O2_OVERRIDE_HIP_ARCHS}}             \
+      ${ALIBUILD_O2_OVERRIDE_CUDA_ARCHS:+-DCUDA_COMPUTETARGET=${ALIBUILD_O2_OVERRIDE_CUDA_ARCHS}}         \
       ${CURL_ROOT:+-DCURL_ROOT=$CURL_ROOT}                                                                \
       ${LIBUV_ROOT:+-DLibUV_ROOT=$LIBUV_ROOT}                                                             \
       ${BUILD_ANALYSIS:+-DBUILD_ANALYSIS=$BUILD_ANALYSIS}                                                 \
@@ -277,6 +280,9 @@ if [[ $ALIBUILD_O2_TESTS ]]; then
   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$O2_ROOT/lib
   if [[ ! $BOOST_VERSION && $ARCHITECTURE == osx* ]]; then
     export ROOT_INCLUDE_PATH=$(brew --prefix boost)/include:$ROOT_INCLUDE_PATH
+  fi
+  if [[ -z $OPENSSL_REVISION && $ARCHITECTURE == osx* ]]; then
+    export ROOT_INCLUDE_PATH=$(brew --prefix openssl@3)/include:$ROOT_INCLUDE_PATH
   fi
   export ROOT_INCLUDE_PATH=$INSTALLROOT/include:$INSTALLROOT/include/GPU:$ROOT_INCLUDE_PATH
   # Clean up old coverage data and tests logs
