@@ -3,6 +3,7 @@ version: "%(tag_basename)s"
 tag: v3.17.5
 requires:
   - boost
+  - protobuf
   - "GCC-Toolchain:(?!osx)"
   - curl
   - libInfoLogger
