@@ -1,8 +1,9 @@
 package: ONNXRuntime
 version: "%(tag_basename)s"
-tag: v1.12.1-alice1
-source: https://github.com/alisw/onnxruntime.git
+tag: v1.16.1
+source: https://github.com/microsoft/onnxruntime.git
 requires:
+  - abseil
   - protobuf
   - re2
   - flatbuffers
@@ -16,13 +17,9 @@ build_requires:
 #!/bin/bash -e
 
 pushd $SOURCEDIR
-  git submodule update --init -- cmake/external/date
   git submodule update --init -- cmake/external/onnx
-  git submodule update --init -- cmake/external/eigen
-  git submodule update --init -- cmake/external/nsync
-  git submodule update --init -- cmake/external/SafeInt
-  git submodule update --init -- cmake/external/json
-  git submodule update --init -- cmake/external/pytorch_cpuinfo
+  git submodule update --init -- cmake/external/emsdk
+  git submodule update --init -- cmake/external/libprotobuf-mutator
 popd
 
 mkdir -p $INSTALLROOT
@@ -35,15 +32,16 @@ cmake "$SOURCEDIR/cmake" \
       -Donnxruntime_BUILD_UNIT_TESTS=OFF \
       -Donnxruntime_PREFER_SYSTEM_LIB=ON \
       -Donnxruntime_BUILD_SHARED_LIB=ON \
-      -DProtobuf_USE_STATIC_LIBS=ON \
-      ${PROTOBUF_ROOT:+-DProtobuf_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf.a} \
-      ${PROTOBUF_ROOT:+-DProtobuf_LITE_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf-lite.a} \
-      ${PROTOBUF_ROOT:+-DProtobuf_PROTOC_LIBRARY=$PROTOBUF_ROOT/lib/libprotoc.a} \
+      -DProtobuf_USE_STATIC_LIBS=OFF \
+      ${PROTOBUF_ROOT:+-DProtobuf_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf.dylib} \
+      ${PROTOBUF_ROOT:+-DProtobuf_LITE_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf-lite.dylib} \
+      ${PROTOBUF_ROOT:+-DProtobuf_PROTOC_LIBRARY=$PROTOBUF_ROOT/lib/libprotoc.dylib} \
       ${PROTOBUF_ROOT:+-DProtobuf_INCLUDE_DIR=$PROTOBUF_ROOT/include} \
       ${PROTOBUF_ROOT:+-DProtobuf_PROTOC_EXECUTABLE=$PROTOBUF_ROOT/bin/protoc} \
       ${RE2_ROOT:+-DRE2_INCLUDE_DIR=${RE2_ROOT}/include} \
       ${FLATBUFFERS_ROOT:+-DFLATBUFFERS_INCLUDE_DIR=${FLATBUFFERS_ROOT}/include} \
-      ${BOOST_ROOT:+-DBOOST_INCLUDE_DIR=${BOOST_ROOT}/include}
+      ${BOOST_ROOT:+-DBOOST_INCLUDE_DIR=${BOOST_ROOT}/include} \
+      ${ABSEIL_ROOT:+-DCMAKE_PREFIX_PATH=${ABSEIL_ROOT}/include} 
 
 cmake --build . -- ${JOBS:+-j$JOBS} install
 

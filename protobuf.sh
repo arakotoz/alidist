@@ -1,19 +1,26 @@
 package: protobuf
-version: v21.9
+version: v24.4
 source: https://github.com/protocolbuffers/protobuf
 build_requires:
   - CMake
   - "GCC-Toolchain:(?!osx)"
+  - abseil
 ---
+#!/bin/bash -e
 
-cmake $SOURCEDIR/cmake                  \
+cmake $SOURCEDIR                        \
+    -G Ninja                            \
     -DCMAKE_INSTALL_PREFIX=$INSTALLROOT \
-    -Dprotobuf_BUILD_TESTS=NO           \
-    -Dprotobuf_MODULE_COMPATIBLE=YES    \
-    -Dprotobuf_BUILD_SHARED_LIBS=OFF    \
-    -DCMAKE_INSTALL_LIBDIR=lib
-make ${JOBS:+-j $JOBS}
-make install
+    -Dprotobuf_BUILD_TESTS=OFF          \
+    -Dprotobuf_MODULE_COMPATIBLE=ON    \
+    -Dprotobuf_BUILD_SHARED_LIBS=ON    \
+    -DCMAKE_INSTALL_LIBDIR=lib           \
+    -Dprotobuf_ABSL_PROVIDER=package    \
+    ${ABSEIL_ROOT:+-DCMAKE_PREFIX_PATH=$ABSEIL_ROOT} 
+    
+cmake --build . -- ${JOBS+-j $JOBS} install
+#make ${JOBS:+-j $JOBS}
+#make install
 
 #ModuleFile
 MODULEDIR="$INSTALLROOT/etc/modulefiles"
