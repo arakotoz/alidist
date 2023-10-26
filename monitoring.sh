@@ -10,6 +10,7 @@ requires:
 build_requires:
   - CMake
   - alibuild-recipe-tools
+  - abseil
 source: https://github.com/AliceO2Group/Monitoring
 incremental_recipe: |
   make ${JOBS:+-j$JOBS} install
@@ -25,14 +26,24 @@ if [[ $ALIBUILD_O2_TESTS ]]; then
   CXXFLAGS="${CXXFLAGS} -Werror -Wno-error=deprecated-declarations"
 fi
 
-cmake $SOURCEDIR                                              \
-      -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                     \
-      ${BOOST_REVISION:+-DBOOST_ROOT=$BOOST_ROOT}                 \
-      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON 
+cmake $SOURCEDIR                                           \
+      -G Ninja                                             \
+      -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                  \
+      ${BOOST_REVISION:+-DBOOST_ROOT=$BOOST_ROOT}          \
+      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                   \
+      -DProtobuf_USE_STATIC_LIBS=OFF \
+      ${PROTOBUF_ROOT:+-DProtobuf_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf.dylib} \
+      ${PROTOBUF_ROOT:+-DProtobuf_LITE_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf-lite.dylib} \
+      ${PROTOBUF_ROOT:+-DProtobuf_PROTOC_LIBRARY=$PROTOBUF_ROOT/lib/libprotoc.dylib} \
+      ${PROTOBUF_ROOT:+-DProtobuf_INCLUDE_DIR=$PROTOBUF_ROOT/include} \
+      ${PROTOBUF_ROOT:+-DProtobuf_PROTOC_EXECUTABLE=$PROTOBUF_ROOT/bin/protoc} \
+      ${ABSEIL_ROOT:+-DCMAKE_PREFIX_PATH=${ABSEIL_ROOT}/include}
 
 cp ${BUILDDIR}/compile_commands.json ${INSTALLROOT}
 
-make ${JOBS+-j $JOBS} install
+cmake --build . -- ${JOBS+-j $JOBS} install
+
+#make ${JOBS+-j $JOBS} install
 
 if [[ $ALIBUILD_O2_TESTS ]]; then
   ctest --output-on-failure
