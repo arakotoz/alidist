@@ -19,8 +19,6 @@ cmake $SOURCEDIR                        \
     ${ABSEIL_ROOT:+-DCMAKE_PREFIX_PATH=$ABSEIL_ROOT} 
     
 cmake --build . -- ${JOBS+-j $JOBS} install
-#make ${JOBS:+-j $JOBS}
-#make install
 
 #ModuleFile
 MODULEDIR="$INSTALLROOT/etc/modulefiles"
