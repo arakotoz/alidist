@@ -8,7 +8,8 @@ build_requires:
   - alibuild-recipe-tools
 source: https://github.com/abseil/abseil-cpp
 incremental_recipe: |
-  make ${JOBS:+-j$JOBS} install
+  #make ${JOBS:+-j$JOBS} install
+  cmake --build . -- ${JOBS:+-j$JOBS} install
   mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INSTALLROOT/etc/modulefiles
 ---
 #!/bin/bash -e
@@ -17,9 +18,11 @@ mkdir -p $INSTALLROOT
 cmake $SOURCEDIR                             \
   ${CXXSTD:+-DCMAKE_CXX_STANDARD=$CXXSTD}    \
   -DBUILD_TESTING=OFF                        \
+  -DABSL_ENABLE_INSTALL=ON                   \
   -DCMAKE_INSTALL_PREFIX=$INSTALLROOT
 
-make ${JOBS:+-j$JOBS} install
+#make ${JOBS:+-j$JOBS} install
+cmake --build . -- ${JOBS:+-j$JOBS} install
 
 
 # Modulefile

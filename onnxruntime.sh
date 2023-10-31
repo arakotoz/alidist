@@ -17,15 +17,14 @@ build_requires:
 #!/bin/bash -e
 
 pushd $SOURCEDIR
-  git submodule update --init -- cmake/external/onnx
-  git submodule update --init -- cmake/external/emsdk
-  git submodule update --init -- cmake/external/libprotobuf-mutator
+  git submodule update --init --recursive
 popd
 
 mkdir -p $INSTALLROOT
 
 cmake "$SOURCEDIR/cmake" \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT \
+      ${CXXSTD:+-DCMAKE_CXX_STANDARD=$CXXSTD}    \
       -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE \
       -DCMAKE_INSTALL_LIBDIR=lib \
       -DPYTHON_EXECUTABLE=$(python3 -c "import sys; print(sys.executable)") \

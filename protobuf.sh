@@ -8,14 +8,17 @@ build_requires:
 ---
 #!/bin/bash -e
 
-cmake $SOURCEDIR                        \
-    -G Ninja                            \
-    -DCMAKE_INSTALL_PREFIX=$INSTALLROOT \
-    -Dprotobuf_BUILD_TESTS=OFF          \
-    -Dprotobuf_MODULE_COMPATIBLE=ON    \
-    -Dprotobuf_BUILD_SHARED_LIBS=ON    \
-    -DCMAKE_INSTALL_LIBDIR=lib           \
-    -Dprotobuf_ABSL_PROVIDER=package    \
+cmake $SOURCEDIR                               \
+    -G Ninja                                   \
+    ${CXXSTD:+-DCMAKE_CXX_STANDARD=$CXXSTD}    \
+    -DCMAKE_INSTALL_PREFIX=$INSTALLROOT        \
+    -DBUILD_SHARED_LIBS=ON                     \
+    -Dprotobuf_BUILD_LIBPROTOC=ON              \
+    -Dprotobuf_BUILD_SHARED_LIBS=ON            \
+    -Dprotobuf_BUILD_TESTS=OFF                 \
+    -Dprotobuf_MODULE_COMPATIBLE=ON            \
+    -DCMAKE_INSTALL_LIBDIR=lib                 \
+    -Dprotobuf_ABSL_PROVIDER=package           \
     ${ABSEIL_ROOT:+-DCMAKE_PREFIX_PATH=$ABSEIL_ROOT} 
     
 cmake --build . -- ${JOBS+-j $JOBS} install
