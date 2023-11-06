@@ -1,9 +1,11 @@
 package: DDS
 version: "%(tag_basename)s"
-tag: "3.7.22"
-source: https://github.com/FairRootGroup/DDS
+tag: "3.7.63"
+source: https://github.com/arakotoz/DDS
+#source: https://github.com/FairRootGroup/DDS
 requires:
   - boost
+  - abseil
   - protobuf
 build_requires:
   - CMake
@@ -30,7 +32,9 @@ cmake $SOURCEDIR                                                         \
       ${CMAKE_BUILD_TYPE:+-DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE}          \
       ${BOOST_ROOT:+-DBOOST_ROOT=$BOOST_ROOT -DBoost_NO_SYSTEM_PATHS=ON} \
       -DProtobuf_ROOT=${PROTOBUF_ROOT}                                   \
-      -DCMAKE_INSTALL_LIBDIR=lib
+      -DCMAKE_INSTALL_LIBDIR=lib                                         \
+      -Dprotobuf_MODULE_COMPATIBLE=ON                                    \
+      -DCMAKE_PREFIX_PATH="$ABSEIL_ROOT;$PROTOBUF_ROOT"
 
 # Limit the number of build processes to avoid exahusting memory when building
 # on smaller machines.

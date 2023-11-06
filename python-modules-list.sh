@@ -2,18 +2,18 @@ package: Python-modules-list
 version: "1.0"
 env:
   PIP_BASE_REQUIREMENTS: |
-    pip==23.0.1
-    setuptools==65.5.1
-    wheel==0.40.0
+    pip==23.3.1
+    setuptools==68.2.2
+    wheel==0.41.2
   PIP_REQUIREMENTS: |
-    requests==2.27.1
-    ipykernel==5.1.0
-    ipython==7.4.0
-    ipywidgets==7.4.2
-    metakernel==0.20.14
-    mock==2.0.0
-    notebook==5.7.8
-    scons==4.1.0
+    requests==2.31.0
+    ipykernel==6.25.2
+    ipython==8.16.1
+    ipywidgets==8.1.1
+    metakernel==0.30.1
+    mock==5.1.0
+    notebook==7.0.6
+    scons==4.5.2
   PIP36_REQUIREMENTS: |
     PyYAML==6.0.1
     psutil==5.8.0
@@ -113,19 +113,19 @@ env:
     pandas==1.1.5
   PIP311_REQUIREMENTS: |
     PyYAML==6.0.1
-    psutil==5.9.4
-    uproot==4.1.0
-    numpy==1.23.4
-    scipy==1.9.3
-    Cython==0.29.21
-    seaborn==0.11.0
-    scikit-learn==0.24.1
-    sklearn-evaluation==0.8.1
-    Keras==2.4.3
-    xgboost==1.2.0
-    dryable==1.0.5
-    responses==0.10.6
-    pandas==1.1.5
+    psutil==5.9.6
+    uproot==5.1.2
+    numpy==1.25.2
+    scipy==1.11.3
+    Cython==3.0.4
+    seaborn==0.13.0
+    scikit-learn==1.3.2
+    sklearn-evaluation==0.12.0
+    Keras==2.13.1
+    xgboost==2.0.1
+    dryable==1.2.0
+    responses==0.23.3
+    pandas==2.1.1
 build_requires:
   - alibuild-recipe-tools
 ---

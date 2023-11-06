@@ -6,7 +6,8 @@ env:
   CXXFLAGS: -fPIC -O2 -std=c++17
   CXXSTD: '17'
   ENABLE_VMC: 'ON'
-  GEANT4_BUILD_MULTITHREADED: 'ON'
+  GEANT4_BUILD_MULTITHREADED: 'OFF'
+  MACOSX_DEPLOYMENT_TARGET: '10.15'
 disable:
   - mesos
   - MySQL
@@ -32,7 +33,7 @@ overrides:
   fastjet:
     tag: v3.4.1_1.052-alice1
   pythia:
-    tag: v8304
+    tag: v8310-alice1
     requires:
       - lhapdf
       - boost

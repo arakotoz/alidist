@@ -1,6 +1,6 @@
 package: Python
 version: "%(tag_basename)s"
-tag: v3.10.9
+tag: v3.11.6
 source: https://github.com/python/cpython
 requires:
   - AliEn-Runtime:(?!.*ppc64)
@@ -41,7 +41,7 @@ if [[ $ALIEN_RUNTIME_VERSION ]]; then
   ZLIB_ROOT=${ZLIB_ROOT:+$ALIEN_RUNTIME_ROOT}
 fi
 case $ARCHITECTURE in
-  osx*) [[ ! $OPENSSL_ROOT ]] && OPENSSL_ROOT=$(brew --prefix openssl@1.1) ;;
+  osx*) [[ ! $OPENSSL_ROOT ]] && OPENSSL_ROOT=$(brew --prefix openssl@3) ;;
 esac
 
 # Set own OpenSSL if appropriate
