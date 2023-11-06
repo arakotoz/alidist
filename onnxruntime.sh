@@ -1,7 +1,7 @@
 package: ONNXRuntime
 version: "%(tag_basename)s"
-tag: v1.16.1
-source: https://github.com/microsoft/onnxruntime.git
+tag: v1.16.1-alice
+source: https://github.com/arakotoz/onnxruntime
 requires:
   - abseil
   - protobuf
@@ -31,6 +31,7 @@ cmake "$SOURCEDIR/cmake" \
       -Donnxruntime_BUILD_UNIT_TESTS=OFF \
       -Donnxruntime_PREFER_SYSTEM_LIB=ON \
       -Donnxruntime_BUILD_SHARED_LIB=ON \
+      -Donnxruntime_USE_EXTENSIONS=ON \
       -DProtobuf_USE_STATIC_LIBS=OFF \
       ${PROTOBUF_ROOT:+-DProtobuf_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf.dylib} \
       ${PROTOBUF_ROOT:+-DProtobuf_LITE_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf-lite.dylib} \
