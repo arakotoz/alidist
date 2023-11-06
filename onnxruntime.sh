@@ -1,6 +1,6 @@
 package: ONNXRuntime
 version: "%(tag_basename)s"
-tag: v1.16.1-alice
+tag: v1.16.1-alice2
 source: https://github.com/arakotoz/onnxruntime
 requires:
   - abseil
@@ -31,8 +31,8 @@ cmake "$SOURCEDIR/cmake" \
       -Donnxruntime_BUILD_UNIT_TESTS=OFF \
       -Donnxruntime_PREFER_SYSTEM_LIB=ON \
       -Donnxruntime_BUILD_SHARED_LIB=ON \
-      -Donnxruntime_USE_EXTENSIONS=ON \
       -DProtobuf_USE_STATIC_LIBS=OFF \
+      -Donnxruntime_USE_FULL_PROTOBUF=ON \
       ${PROTOBUF_ROOT:+-DProtobuf_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf.dylib} \
       ${PROTOBUF_ROOT:+-DProtobuf_LITE_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf-lite.dylib} \
       ${PROTOBUF_ROOT:+-DProtobuf_PROTOC_LIBRARY=$PROTOBUF_ROOT/lib/libprotoc.dylib} \
@@ -44,6 +44,9 @@ cmake "$SOURCEDIR/cmake" \
       ${ABSEIL_ROOT:+-DCMAKE_PREFIX_PATH=${ABSEIL_ROOT}/include} 
 
 cmake --build . -- ${JOBS:+-j$JOBS} install
+
+mkdir -p ${INSTALLROOT}/include/onnxruntime/core/session/
+cp ${SOURCEDIR}/include/onnxruntime/core/session/*.h ${INSTALLROOT}/include/onnxruntime/core/session/. 
 
 # Modulefile
 mkdir -p "$INSTALLROOT/etc/modulefiles"
