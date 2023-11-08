@@ -6,18 +6,24 @@ requires:
   - "GCC-Toolchain:(?!osx)"
   - curl
   - libInfoLogger
+  - protobuf
+  - grpc
 build_requires:
   - CMake
   - alibuild-recipe-tools
+  - abseil
 source: https://github.com/AliceO2Group/Monitoring
 incremental_recipe: |
-  make ${JOBS:+-j$JOBS} install
+  cmake --build . -- ${JOBS+-j $JOBS} install
   mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INSTALLROOT/etc/modulefiles
 ---
 #!/bin/bash -ex
 
 case $ARCHITECTURE in
-    osx*) [[ ! $BOOST_ROOT ]] && BOOST_ROOT=$(brew --prefix boost);;
+    osx*)
+      [[ ! $BOOST_ROOT ]] && BOOST_ROOT=$(brew --prefix boost)
+      export PKG_CONFIG_PATH=${PROTOBUF_ROOT}/lib/pkgconfig
+    ;;
 esac
 
 if [[ $ALIBUILD_O2_TESTS ]]; then
@@ -25,13 +31,16 @@ if [[ $ALIBUILD_O2_TESTS ]]; then
 fi
 
 cmake $SOURCEDIR                                              \
+      -G Ninja                                               \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                     \
-      ${BOOST_REVISION:+-DBOOST_ROOT=$BOOST_ROOT}                 \
-      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON 
+      ${BOOST_REVISION:+-DBOOST_ROOT=$BOOST_ROOT}              \
+      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                   \
+      -DProtobuf_ROOT=${PROTOBUF_ROOT}                         \
+      -DCMAKE_PREFIX_PATH="$PYTHIA_ROOT;$ABSEIL_ROOT;$PROTOBUF_ROOT;$GRPC_ROOT;" 
 
 cp ${BUILDDIR}/compile_commands.json ${INSTALLROOT}
 
-make ${JOBS+-j $JOBS} install
+cmake --build . -- ${JOBS+-j $JOBS} install
 
 if [[ $ALIBUILD_O2_TESTS ]]; then
   ctest --output-on-failure
