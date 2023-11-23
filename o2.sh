@@ -28,6 +28,7 @@ requires:
   - MLModels
   - KFParticle
   - RapidJSON
+  - pythia
 build_requires:
   - abseil
   - GMP
@@ -204,6 +205,7 @@ cmake $SOURCEDIR -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                            
       ${CLANG_REVISION:+-DCLANG_EXECUTABLE="$CLANG_ROOT/bin-safe/clang"}                                  \
       ${CLANG_REVISION:+-DLLVM_LINK_EXECUTABLE="$CLANG_ROOT/bin/llvm-link"}                               \
       ${ITSRESPONSE_ROOT:+-DITSRESPONSE=${ITSRESPONSE_ROOT}}
+      -DCMAKE_PREFIX_PATH="$PYTHIA_ROOT;$ABSEIL_ROOT"
 # LLVM_ROOT is required for Gandiva
 
 cmake --build . -- ${JOBS+-j $JOBS} install

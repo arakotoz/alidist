@@ -95,7 +95,7 @@ if [[ -d $SOURCEDIR/interpreter/llvm ]]; then
   # ROOT 6+: enable Python
   ROOT_PYTHON_FLAGS="-Dpyroot=ON"
   ROOT_HAS_PYTHON=1
-  python_exec=$(python3 -c 'import distutils.sysconfig; print(distutils.sysconfig.get_config_var("exec_prefix"))')/bin/python3
+  python_exec=$(python3 -c 'import sys, os; print(os.path.realpath(sys.exec_prefix))')/bin/python3
   if [ "$python_exec" = "$(which python3)" ]; then
     # By default, if there's nothing funny going on, let ROOT pick the Python in
     # the PATH, which is the one built by us (unless disabled, in which case it
