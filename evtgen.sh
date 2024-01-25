@@ -1,7 +1,7 @@
 package: EVTGEN
 version: "%(tag_basename)s"
-tag: "R02-02-00"
-source: https://github.com/alisw/EVTGEN
+tag: "R02-02-00a"
+source: https://github.com/arakotoz/EVTGEN
 requires:
   - HepMC
   - pythia

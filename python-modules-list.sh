@@ -4,11 +4,11 @@ env:
   PIP_BASE_REQUIREMENTS: |
     pip==23.3.1
     setuptools==68.2.2
-    wheel==0.41.2
+    wheel==0.41.3
   PIP_REQUIREMENTS: |
     requests==2.31.0
-    ipykernel==6.25.2
-    ipython==8.16.1
+    ipykernel==6.26.0
+    ipython==8.17.2
     ipywidgets==8.1.1
     metakernel==0.30.1
     mock==5.1.0
@@ -80,8 +80,8 @@ env:
   # Everything but the first two lines copied from PIP39_REQUIREMENTS, but with versions
   # adjusted such that wheels are available and for compatibility with tensorflow.
   PIP39_REQUIREMENTS_osx_arm64: |
-    tensorflow-macos==2.12.0
-    tensorflow-metal==0.8.0
+    tensorflow-macos==2.13.0
+    tensorflow-metal==1.0.1
     PyYAML==6.0.1
     psutil==5.9.5
     uproot==4.1.0
@@ -91,7 +91,7 @@ env:
     seaborn==0.11.0
     scikit-learn==1.2.2
     sklearn-evaluation==0.12.0
-    Keras==2.12.0
+    Keras==2.13.1
     xgboost==1.7.5
     dryable==1.0.5
     responses==0.10.6
@@ -113,19 +113,34 @@ env:
     pandas==1.1.5
   PIP311_REQUIREMENTS: |
     PyYAML==6.0.1
-    psutil==5.9.6
-    uproot==5.1.2
-    numpy==1.25.2
-    scipy==1.11.3
-    Cython==3.0.4
-    seaborn==0.13.0
-    scikit-learn==1.3.2
+    psutil==5.9.5
+    uproot==4.1.0
+    numpy==1.23.5
+    scipy==1.10.1
+    Cython==0.29.21
+    seaborn==0.11.0
+    scikit-learn==1.3.0
     sklearn-evaluation==0.12.0
     Keras==2.13.1
+    xgboost==1.7.5
+    dryable==1.0.5
+    responses==0.10.6
+    pandas==1.5.3
+  PIP312_REQUIREMENTS: |
+    PyYAML==6.0.1
+    psutil==5.9.6
+    uproot==5.1.2
+    numpy==1.26.1
+    scipy==1.11.3
+    Cython==3.0.5
+    seaborn==0.11.0
+    scikit-learn==1.3.2
+    sklearn-evaluation==0.12.0
+    Keras==2.15.0
     xgboost==2.0.1
     dryable==1.2.0
-    responses==0.23.3
-    pandas==2.1.1
+    responses==0.24.0
+    pandas==2.1.2
 build_requires:
   - alibuild-recipe-tools
 ---

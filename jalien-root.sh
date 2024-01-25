@@ -1,6 +1,6 @@
 package: JAliEn-ROOT
 version: "%(tag_basename)s"
-tag: "0.7.1"
+tag: "0.7.5"
 source: https://gitlab.cern.ch/jalien/jalien-root.git
 requires:
   - ROOT
@@ -33,6 +33,7 @@ rsync -a $ALICE_GRID_UTILS_ROOT/include/ $BUILDDIR/inc
 cmake $BUILDDIR                                          \
       -DCMAKE_INSTALL_PREFIX="$INSTALLROOT"              \
       ${CXXSTD:+-DCMAKE_CXX_STANDARD=${CXXSTD}}          \
+      -DCMAKE_BUILD_TYPE=RelWithDebInfo                  \
       -DROOTSYS="$ROOTSYS"                               \
       -DJSONC="$JSON_C_ROOT"                             \
        ${OPENSSL_ROOT:+-DOPENSSL_ROOT_DIR=$OPENSSL_ROOT} \

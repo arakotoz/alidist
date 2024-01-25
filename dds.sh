@@ -1,8 +1,7 @@
 package: DDS
 version: "%(tag_basename)s"
-tag: "3.7.63"
-source: https://github.com/arakotoz/DDS
-#source: https://github.com/FairRootGroup/DDS
+tag: "3.7.23"
+source: https://github.com/FairRootGroup/DDS
 requires:
   - boost
   - abseil
