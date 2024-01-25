@@ -45,7 +45,7 @@ case $ARCHITECTURE in
 esac
 
 # Major.minor version of Python
-pyver="$(python3 -c 'import distutils.sysconfig; print(distutils.sysconfig.get_python_version())')"
+pyver="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
 
 # These are the basic requirements needed for all installation and platform
 # and it should represent the common denominator (working) for all packages/platforms
