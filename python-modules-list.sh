@@ -2,9 +2,9 @@ package: Python-modules-list
 version: "1.0"
 env:
   PIP_BASE_REQUIREMENTS: |
-    pip==23.3.1
-    setuptools==68.2.2
-    wheel==0.41.3
+    pip==24.0
+    setuptools==69.1.0
+    wheel==0.42.0
   PIP_REQUIREMENTS: |
     # This is a pip requirements file. For documentation see:
     # https://pip.pypa.io/en/stable/reference/requirements-file-format/
@@ -27,7 +27,8 @@ env:
     requests == 2.27.1; python_version < '3.11'
     requests == 2.31.0; python_version >= '3.11'
     PyYAML == 6.0.1
-    uproot == 4.1.0
+    uproot == 4.1.0; python_version < '3.11'
+    uproot == 5.2.2; python_version >= '3.11'
 
     # Mock is included in the Python standard library as unittest.mock from
     # 3.3 onwards.
@@ -36,61 +37,64 @@ env:
 
     psutil == 5.8.0; python_version < '3.10'
     psutil == 5.9.0; python_version == '3.10'
-    psutil == 5.9.5; python_version >= '3.11'
+    psutil == 5.9.8; python_version >= '3.11'
 
     numpy == 1.16.2; python_version < '3.8'
     numpy == 1.19.5; python_version == '3.8'
     numpy == 1.21.4; python_version == '3.9'
     numpy == 1.23.4; python_version == '3.10'
-    numpy == 1.23.5; python_version >= '3.11'
+    numpy == 1.26.4; python_version >= '3.11'
 
     scipy == 1.2.1; python_version < '3.8'
     scipy == 1.6.1; python_version == '3.8'
     scipy == 1.7.3; python_version == '3.9'
     scipy == 1.9.3; python_version == '3.10'
-    scipy == 1.10.1; python_version >= '3.11'
+    scipy == 1.12.0; python_version >= '3.11'
 
     Cython == 0.29.16; python_version < '3.8'
-    Cython == 0.29.21; python_version >= '3.8'
+    Cython == 0.29.21; python_version >= '3.8' and python_version < '3.11'
+    Cython == 3.0.8; python_version >= '3.11'
 
     seaborn == 0.9.0; python_version < '3.9'
-    seaborn == 0.11.0; python_version >= '3.9'
+    seaborn == 0.11.0; python_version >= '3.9' and python_version < '3.11'
+    seaborn == 0.13.2; python_version >= '3.11'
 
     scikit-learn == 0.20.3; python_version < '3.8'
     scikit-learn == 0.24.1; python_version >= '3.8' and python_version < '3.11'
-    scikit-learn == 1.3.0; python_version >= '3.11'
+    scikit-learn == 1.4.0; python_version >= '3.11'
 
     sklearn-evaluation == 0.4; python_version < '3.9'
     sklearn-evaluation == 0.5.2; python_version == '3.9'
     sklearn-evaluation == 0.8.1; python_version == '3.10'
-    sklearn-evaluation == 0.12.0; python_version >= '3.11'
+    sklearn-evaluation == 0.12.1; python_version >= '3.11'
 
     Keras == 2.2.4; python_version < '3.8'
     Keras == 2.4.3; python_version >= '3.8' and python_version < '3.11'
-    Keras == 2.13.1; python_version >= '3.11'
+    Keras == 3.0.4; python_version >= '3.11'
 
     tensorflow == 1.13.1; python_version < '3.8'
     tensorflow == 2.4.1; python_version == '3.8'
-    tensorflow == 2.13.1; python_version == '3.11'
+    tensorflow == 2.14.1; python_version == '3.11'
 
     # See version compatibility table at https://pypi.org/project/tensorflow-metal/
-    tensorflow-metal == 1.0.0; sys_platform == 'darwin' and python_version == '3.11'
+    # tensorflow-metal == 1.1.0; sys_platform == 'darwin' and python_version >= '3.11'
 
     xgboost == 0.82; python_version < '3.8'
     xgboost == 1.3.3; python_version == '3.8'
     xgboost == 1.2.0; python_version >= '3.9' and python_version < '3.11'
-    xgboost == 1.7.5; python_version >= '3.11'
+    xgboost == 2.0.3; python_version >= '3.11'
 
     dryable == 1.0.3; python_version < '3.9'
-    dryable == 1.0.5; python_version >= '3.9'
+    dryable == 1.0.5; python_version >= '3.9' and python_version < '3.11'
+    dryable == 1.2.0; python_version >= '3.11'
 
     pandas == 0.24.2; python_version < '3.8'
     pandas == 1.2.3; python_version == '3.8'
     pandas == 1.1.5; python_version >= '3.9' and python_version < '3.11'
-    pandas == 1.5.3; python_version >= '3.11'
+    pandas == 2.2.0; python_version >= '3.11'
 
     dask[array,dataframe,distributed] == 2023.2.0; python_version < '3.11'
-    dask[array,dataframe,distributed] == 2023.12.1; python_version >= '3.11'
+    dask[array,dataframe,distributed] == 2024.2.0; python_version >= '3.11'
     dask_jobqueue == 0.8.2
 
 build_requires:
