@@ -1,6 +1,6 @@
 package: xjalienfs
 version: "%(tag_basename)s"
-tag: "1.5.7"
+tag: "1.6.0"
 source: https://gitlab.cern.ch/jalien/xjalienfs.git
 requires:
   - "OpenSSL:(?!osx)"
@@ -18,6 +18,14 @@ prepend_path:
 # Use pip's --target to install under $INSTALLROOT without weird hacks. This
 # works inside and outside a virtualenv, but unset VIRTUAL_ENV to make sure we
 # only depend on stuff we installed using our Python and Python-modules.
+
+# on macos try to install gnureadline and just skip if fails (alienpy can work without it)
+# macos python readline implementation is build on libedit which does not work
+[[ "$ARCHITECTURE" ==  osx_* ]] && { env -u VIRTUAL_ENV ALIBUILD=1 \
+    python3 -m pip install --force-reinstall \
+    --target="$INSTALLROOT/lib/python/site-packages" \
+    gnureadline || : ; }
+
 env -u VIRTUAL_ENV ALIBUILD=1 \
     python3 -m pip install --force-reinstall \
     --target="$INSTALLROOT/lib/python/site-packages" \
@@ -40,6 +48,19 @@ for binfile in "$INSTALLROOT"/bin/*; do
   fi
 done
 rm -fv "$INSTALLROOT"/bin/*.bak
+
+# Now that alien.py is installed, we can run its tests.
+set +x   # avoid echoing tokens
+# Make sure we don't accidentally run read-write tests with users' JAliEn keys.
+if [ -n "$ALIBUILD_XJALIENFS_TESTS" ] &&
+     # Tests need a JAliEn token, so skip them if we have none.
+     [ -n "$JALIEN_TOKEN_CERT" ] && [ -n "$JALIEN_TOKEN_KEY" ]
+then
+  PATH="$INSTALLROOT/bin:$PATH" \
+  PYTHONPATH="$INSTALLROOT/lib/python/site-packages:$PYTHONPATH" \
+  "$SOURCEDIR/tests/run_tests" ci-tests
+fi
+set -x
 
 # Modulefile
 mkdir -p "$INSTALLROOT/etc/modulefiles"
