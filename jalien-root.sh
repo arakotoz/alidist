@@ -1,12 +1,13 @@
 package: JAliEn-ROOT
 version: "%(tag_basename)s"
-tag: "0.7.7"
+tag: "0.7.10"
 source: https://gitlab.cern.ch/jalien/jalien-root.git
 requires:
   - ROOT
   - xjalienfs
   - XRootD
   - libwebsockets
+  - libuv
 build_requires:
   - json-c
   - CMake
@@ -58,7 +59,8 @@ module-whatis "ALICE Modulefile for $PKGNAME $PKGVERSION-@@PKGREVISION@$PKGHASH@
 module load BASE/1.0 ${GCC_TOOLCHAIN_REVISION:+GCC-Toolchain/$GCC_TOOLCHAIN_VERSION-$GCC_TOOLCHAIN_REVISION} \\
                      ROOT/${ROOT_VERSION}-${ROOT_REVISION}                                                   \\
                      ${XJALIENFS_REVISION:+xjalienfs/$XJALIENFS_VERSION-$XJALIENFS_REVISION}                 \\
-                     ${LIBJALIENWS_REVISION:+libjalienws/$LIBJALIENWS_VERSION-$LIBJALIENWS_REVISION}
+                     ${LIBUV_REVISION:+libuv/$LIBUV_VERSION-$LIBUV_REVISION}                                 \\
+		     ${LIBJALIENWS_REVISION:+libjalienws/$LIBJALIENWS_VERSION-$LIBJALIENWS_REVISION}
 
 # Our environment
 set JALIEN_ROOT_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
