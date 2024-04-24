@@ -130,8 +130,7 @@ else
 fi
 
 unset DYLD_LIBRARY_PATH
-#CMAKE_GENERATOR=${CMAKE_GENERATOR:-Ninja}
-CMAKE_GENERATOR=${CMAKE_GENERATOR:-Unix Makefiles}
+CMAKE_GENERATOR=${CMAKE_GENERATOR:-Ninja}
 
 # Standard ROOT build
 cmake $SOURCEDIR                                                                       \
