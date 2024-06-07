@@ -7,7 +7,7 @@ env:
   CXXSTD: '20'
   ENABLE_VMC: 'ON'
   GEANT4_BUILD_MULTITHREADED: 'OFF'
-  MACOSX_DEPLOYMENT_TARGET: '10.15'
+  MACOSX_DEPLOYMENT_TARGET: '14.0'
 disable:
   - mesos
   - MySQL
@@ -32,11 +32,6 @@ overrides:
     version: 4.12.2
   fastjet:
     tag: v3.4.1_1.052-alice2
-  pythia:
-    tag: v8310-alice1
-    requires:
-      - lhapdf
-      - boost
 ---
 # This file is included in any build recipe and it's only used to set
 # environment variables. Which file to actually include can be defined by the
