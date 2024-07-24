@@ -7,6 +7,7 @@ requires:
   - re2
   - flatbuffers
   - boost
+  - abseil
 build_requires:
   - CMake
   - alibuild-recipe-tools
