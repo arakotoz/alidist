@@ -44,15 +44,13 @@ env:
 
     numpy == 1.16.2; python_version < '3.8'
     numpy == 1.19.5; python_version == '3.8'
-    numpy == 1.21.4; python_version == '3.9'
-    numpy == 1.23.4; python_version == '3.10'
+    numpy == 1.23.4; python_version >= '3.9' and python_version <= '3.10'
     numpy == 1.23.5; python_version == '3.11'
     numpy == 1.26.4; python_version >= '3.12'
 
     scipy == 1.2.1; python_version < '3.8'
     scipy == 1.6.1; python_version == '3.8'
-    scipy == 1.7.3; python_version == '3.9'
-    scipy == 1.9.3; python_version == '3.10'
+    scipy == 1.9.3; python_version >= '3.9' and python_version <= '3.10'
     scipy == 1.10.1; python_version == '3.11'
     scipy == 1.12.0; python_version >= '3.12'
 
