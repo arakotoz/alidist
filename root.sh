@@ -1,6 +1,6 @@
 package: ROOT
 version: "%(tag_basename)s"
-tag: "v6-32-02-alice1"
+tag: "v6-32-06-alice1"
 source: https://github.com/alisw/root.git
 requires:
   - arrow
@@ -133,6 +133,7 @@ fi
 
 case $PKG_VERSION in
   v6[-.]30*) EXTRA_CMAKE_OPTIONS="-Dminuit2=ON -Dpythia6=ON -Dpythia6_nolink=ON" ;;
+  v6[-.]32[-.]0[6789]*) EXTRA_CMAKE_OPTIONS="-Dminuit=ON -Dpythia6=ON -Dpythia6_nolink=ON -Dproof=ON" ;;
   *) EXTRA_CMAKE_OPTIONS="-Dminuit=ON" ;;
 esac
 
@@ -178,7 +179,7 @@ cmake $SOURCEDIR                                                                
       -Dmathmore=ON                                                                    \
       -Droofit=ON                                                                      \
       -Dhttp=ON                                                                        \
-      -Droot7=OFF                                                                      \
+      -Droot7=ON                                                                       \
       -Dsoversion=ON                                                                   \
       -Dshadowpw=OFF                                                                   \
       -Dvdt=OFF                                                                        \
