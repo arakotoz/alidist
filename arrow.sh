@@ -61,16 +61,16 @@ rsync -a --exclude='**/.git' --delete --delete-excluded "$SOURCEDIR/" ./src_tmp/
 
 case $ARCHITECTURE in
   osx*)
-   # use default llvm from homebrew if available
-   if [ -d "$(brew --prefix llvm)" ]; then
-     CLANG_EXECUTABLE="$(brew --prefix llvm)/bin/clang"
-   else
-     # fall back to llvm@17
-     if [ -d "$(brew --prefix llvm)@17" ]; then
-       CLANG_EXECUTABLE="$(brew --prefix llvm)@17/bin/clang"
-     fi
-   fi
-   ;;
+  # use llvm@17
+  if [ -d "$(brew --prefix llvm)@17" ]; then
+    CLANG_EXECUTABLE="$(brew --prefix llvm)@17/bin/clang"
+  else
+    # fall back to default llvm
+    if [ -d "$(brew --prefix llvm)" ]; then
+      CLANG_EXECUTABLE="$(brew --prefix llvm)/bin/clang"
+    fi
+  fi
+  ;;
   *)
    CLANG_EXECUTABLE="${CLANG_ROOT}/bin-safe/clang"
    # this patches version script to hide llvm symbols in gandiva library
