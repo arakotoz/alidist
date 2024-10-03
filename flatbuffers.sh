@@ -1,5 +1,5 @@
 package: flatbuffers
-version: v24.3.25
+version: v23.5.26
 source: https://github.com/google/flatbuffers
 requires:
   - zlib
