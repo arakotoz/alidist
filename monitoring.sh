@@ -1,6 +1,8 @@
 package: Monitoring
 version: "%(tag_basename)s"
-tag: v3.18.1
+#tag: v3.18.2
+tag: v3.18.2a
+source: https://github.com/arakotoz/Monitoring
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"
@@ -12,7 +14,8 @@ build_requires:
   - CMake
   - alibuild-recipe-tools
   - abseil
-source: https://github.com/AliceO2Group/Monitoring
+prepend_path:
+  PKG_CONFIG_PATH: "${PROTOBUF_ROOT}/lib/pkgconfig"
 incremental_recipe: |
   cmake --build . -- ${JOBS+-j $JOBS} install
   mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INSTALLROOT/etc/modulefiles
@@ -22,7 +25,7 @@ incremental_recipe: |
 case $ARCHITECTURE in
     osx*)
       [[ ! $BOOST_ROOT ]] && BOOST_ROOT=$(brew --prefix boost)
-      export PKG_CONFIG_PATH=${PROTOBUF_ROOT}/lib/pkgconfig
+      [[ -z $PROTOBUF_ROOT ]] && PROTOBUF_ROOT=$(brew --prefix protobuf)
     ;;
 esac
 
@@ -30,12 +33,12 @@ if [[ $ALIBUILD_O2_TESTS ]]; then
   CXXFLAGS="${CXXFLAGS} -Werror -Wno-error=deprecated-declarations"
 fi
 
-cmake $SOURCEDIR                                              \
-      -G Ninja                                               \
-      -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                     \
-      ${BOOST_REVISION:+-DBOOST_ROOT=$BOOST_ROOT}              \
-      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                   \
-      -DProtobuf_ROOT=${PROTOBUF_ROOT}                         \
+cmake $SOURCEDIR                                                \
+      -G Ninja                                                  \
+      -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                       \
+      ${BOOST_REVISION:+-DBOOST_ROOT=$BOOST_ROOT}               \
+      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                        \
+      ${PROTOBUF_ROOT:+-DProtobuf_ROOT=$PROTOBUF_ROOT}          \
       -DCMAKE_PREFIX_PATH="$PYTHIA_ROOT;$ABSEIL_ROOT;$PROTOBUF_ROOT;$GRPC_ROOT;" 
 
 cp ${BUILDDIR}/compile_commands.json ${INSTALLROOT}
