@@ -8,6 +8,7 @@ requires:
   - boost
   - abseil
 build_requires:
+  - flatbuffers
   - CMake
   - alibuild-recipe-tools
   - "Python:(slc|ubuntu)"  # this package builds ONNX, which requires Python
@@ -18,6 +19,14 @@ prepend_path:
 #!/bin/bash -e
 
 mkdir -p $INSTALLROOT
+
+case $ARCHITECTURE in
+  osx*)
+    # If we preferred system tools, we need to make sure we can pick them up.
+    [[ -z $FLATBUFFERS_ROOT ]] && FLATBUFFERS_ROOT=$(dirname "$(dirname "$(which flatc)")")
+    [[ ! -d $FLATBUFFERS_ROOT ]] && unset FLATBUFFERS_ROOT
+  ;;
+esac
 
 cmake "$SOURCEDIR/cmake"                                                              \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                                             \
@@ -35,6 +44,8 @@ cmake "$SOURCEDIR/cmake"                                                        
       ${PROTOBUF_ROOT:+-DProtobuf_PROTOC_EXECUTABLE=$PROTOBUF_ROOT/bin/protoc}        \
       ${RE2_ROOT:+-DRE2_INCLUDE_DIR=${RE2_ROOT}/include}                              \
       ${BOOST_ROOT:+-DBOOST_INCLUDE_DIR=${BOOST_ROOT}/include}                        \
+      ${FLATBUFFERS_ROOT:+-DFLATBUFFERS_INCLUDE_DIR=${FLATBUFFERS_ROOT}/include}      \
+      -DCMAKE_PREFIX_PATH="$FLATBUFFERS_ROOT"                                         \
       -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wno-unknown-warning -Wno-unknown-warning-option -Wno-error=unused-but-set-variable -Wno-error=deprecated" \
       -DCMAKE_C_FLAGS="$CFLAGS -Wno-unknown-warning -Wno-unknown-warning-option -Wno-error=unused-but-set-variable -Wno-error=deprecated"
 
