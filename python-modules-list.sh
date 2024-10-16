@@ -48,13 +48,13 @@ env:
     numpy == 1.19.5; python_version == '3.8'
     numpy == 1.23.4; python_version >= '3.9' and python_version <= '3.10'
     numpy == 1.23.5; python_version == '3.11'
-    numpy == 2.1.2; python_version >= '3.12'
+    numpy == 1.26.4; python_version >= '3.12'
 
     scipy == 1.2.1; python_version < '3.8'
     scipy == 1.6.1; python_version == '3.8'
     scipy == 1.9.3; python_version >= '3.9' and python_version <= '3.10'
     scipy == 1.10.1; python_version == '3.11'
-    scipy == 1.14.1; python_version >= '3.13'
+    scipy == 1.14.1; python_version >= '3.12'
 
     Cython == 0.29.16; python_version < '3.8'
     Cython == 0.29.21; python_version >= '3.8' and python_version <= '3.11'
