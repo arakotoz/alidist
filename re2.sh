@@ -1,5 +1,5 @@
 package: re2
-version: "2024-07-02"
+version: "2019-09-01"
 source: https://github.com/google/re2
 build_requires:
   - "GCC-Toolchain:(?!osx)"
