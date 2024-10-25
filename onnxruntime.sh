@@ -45,7 +45,7 @@ cmake "$SOURCEDIR/cmake"                                                        
       ${RE2_ROOT:+-DRE2_INCLUDE_DIR=${RE2_ROOT}/include}                              \
       ${BOOST_ROOT:+-DBOOST_INCLUDE_DIR=${BOOST_ROOT}/include}                        \
       ${FLATBUFFERS_ROOT:+-DFLATBUFFERS_INCLUDE_DIR=${FLATBUFFERS_ROOT}/include}      \
-      -DCMAKE_PREFIX_PATH="$FLATBUFFERS_ROOT"                                         \
+      -DCMAKE_PREFIX_PATH="${FLATBUFFERS_ROOT};${ABSEIL_ROOT}"                        \
       -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wno-unknown-warning -Wno-unknown-warning-option -Wno-error=unused-but-set-variable -Wno-error=deprecated" \
       -DCMAKE_C_FLAGS="$CFLAGS -Wno-unknown-warning -Wno-unknown-warning-option -Wno-error=unused-but-set-variable -Wno-error=deprecated"
 
