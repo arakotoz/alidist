@@ -1,6 +1,6 @@
 package: ROOT
 version: "%(tag_basename)s"
-tag: "v6-32-06-alice1"
+tag: "v6-32-06-alice2"
 source: https://github.com/alisw/root.git
 requires:
   - arrow
@@ -95,17 +95,25 @@ if [[ $ALIEN_RUNTIME_VERSION ]]; then
 fi
 [[ $SYS_OPENSSL_ROOT ]] && OPENSSL_ROOT=$SYS_OPENSSL_ROOT
 
-# ROOT 6+: enable Python
-ROOT_PYTHON_FLAGS="-Dpyroot=ON"
-ROOT_HAS_PYTHON=1
-python_exec=$(python3 -c 'import distutils.sysconfig; print(distutils.sysconfig.get_config_var("exec_prefix"))')/bin/python3
-if [ "$python_exec" = "$(which python3)" ]; then
-  # By default, if there's nothing funny going on, let ROOT pick the Python in
-  # the PATH, which is the one built by us (unless disabled, in which case it
-  # is the system one). This is substituted into ROOT's Python scripts'
-  # shebang lines, so we cannot use an absolute path because the path to our
-  # Python will differ between build time and runtime, e.g. on the Grid.
-  PYTHON_EXECUTABLE=
+if [[ -d $SOURCEDIR/interpreter/llvm ]]; then
+  # ROOT 6+: enable Python
+  ROOT_PYTHON_FLAGS="-Dpyroot=ON"
+  ROOT_HAS_PYTHON=1
+  python_exec=$(python3 -c 'import sys, os; print(os.path.realpath(sys.exec_prefix))')/bin/python3
+  if [ "$python_exec" = "$(which python3)" ]; then
+    # By default, if there's nothing funny going on, let ROOT pick the Python in
+    # the PATH, which is the one built by us (unless disabled, in which case it
+    # is the system one). This is substituted into ROOT's Python scripts'
+    # shebang lines, so we cannot use an absolute path because the path to our
+    # Python will differ between build time and runtime, e.g. on the Grid.
+    PYTHON_EXECUTABLE=
+  else
+    # If Python's exec_prefix doesn't point to the same place as $PATH, then we
+    # have a shim script in between. This is used by things like pyenv and asdf.
+    # This doesn't happen when building things to be published, only in local
+    # usage, so hardcoding an absolute path into the shebangs is fine.
+    PYTHON_EXECUTABLE=$python_exec
+  fi
 else
   # If Python's exec_prefix doesn't point to the same place as $PATH, then we
   # have a shim script in between. This is used by things like pyenv and asdf.
@@ -131,10 +139,11 @@ esac
 
 unset DYLD_LIBRARY_PATH
 CMAKE_GENERATOR=${CMAKE_GENERATOR:-Ninja}
+
 # Standard ROOT build
 cmake $SOURCEDIR                                                                       \
       ${CMAKE_GENERATOR:+-G "$CMAKE_GENERATOR"}                                        \
-      -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE                                             \
+      ${CMAKE_BUILD_TYPE:+-DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE}                        \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                                              \
       -Dalien=OFF                                                                      \
       ${CMAKE_CXX_STANDARD:+-DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}}                \
@@ -162,6 +171,11 @@ cmake $SOURCEDIR                                                                
       ${LIBPNG_ROOT:+-DPNG_INCLUDE_DIRS="${LIBPNG_ROOT}/include"}                      \
       ${LIBPNG_ROOT:+-DPNG_LIBRARY="${LIBPNG_ROOT}/lib/libpng.${SONAME}"}              \
       ${PROTOBUF_REVISION:+-DProtobuf_DIR=${PROTOBUF_ROOT}}                            \
+      ${PROTOBUF_ROOT:+-DProtobuf_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf.a}           \
+      ${PROTOBUF_ROOT:+-DProtobuf_LITE_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf-lite.a} \
+      ${PROTOBUF_ROOT:+-DProtobuf_PROTOC_LIBRARY=$PROTOBUF_ROOT/lib/libprotoc.a}      \
+      ${PROTOBUF_ROOT:+-DProtobuf_INCLUDE_DIR=$PROTOBUF_ROOT/include}                 \
+      ${PROTOBUF_ROOT:+-DProtobuf_PROTOC_EXECUTABLE=$PROTOBUF_ROOT/bin/protoc}        \
       ${ZLIB_ROOT:+-DZLIB_ROOT=${ZLIB_ROOT}}                                           \
       ${FFTW3_ROOT:+-DFFTW_DIR=${FFTW3_ROOT}}                                          \
       -Dfftw3=ON                                                                       \
