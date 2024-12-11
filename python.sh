@@ -1,6 +1,6 @@
 package: Python
 version: "%(tag_basename)s"
-tag: v3.9.16
+tag: v3.12.8
 source: https://github.com/python/cpython
 requires:
   - AliEn-Runtime:(?!.*ppc64)
@@ -18,7 +18,7 @@ env:
   PYTHONPATH: "$PYTHON_ROOT/lib/python/site-packages"
 prefer_system: "(?!slc5|ubuntu)"
 prefer_system_check:
-  python3 -c 'import sys; import sqlite3; sys.exit(1 if sys.version_info < (3, 9) else 0)' && python3 -m pip --help > /dev/null && printf '#include "pyconfig.h"' | cc -c $(python3-config --includes) -xc -o /dev/null -; if [ $? -ne 0 ]; then printf "Python, the Python development packages, and pip must be installed on your system.\nUsually those packages are called python, python-devel (or python-dev) and python-pip.\n"; exit 1; fi
+  python3 -c 'import sys; import sqlite3; sys.exit(1 if sys.version_info < (3, 9) or sys.version_info > (3, 14) else 0)' && python3 -m pip --help > /dev/null && printf '#include "pyconfig.h"' | cc -c $(python3-config --includes) -xc -o /dev/null -; if [ $? -ne 0 ]; then printf "Python, the Python development packages, and pip must be installed on your system.\nUsually those packages are called python, python-devel (or python-dev) and python-pip.\n"; exit 1; fi
 ---
 rsync -av --exclude '**/.git' $SOURCEDIR/ $BUILDDIR/
 
@@ -54,7 +54,7 @@ esac
 if [[ $OPENSSL_ROOT ]]; then
   export CPATH="$OPENSSL_ROOT/include:$OPENSSL_ROOT/include/openssl:$CPATH"
   export CPPFLAGS="-I$OPENSSL_ROOT/include -I$OPENSSL_ROOT/include/openssl $CPPFLAGS"
-  export CFLAGS="-I$OPENSSL_ROOT/include -I$OPENSSL_ROOT/include/openssl"
+  export CFLAGS="-I$OPENSSL_ROOT/include -I$OPENSSL_ROOT/include/openssl $CFLAGS"
   cat >> Modules/Setup.dist <<EOF
 
 SSL=$OPENSSL_ROOT

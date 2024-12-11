@@ -3,11 +3,11 @@ version: "1.0"
 env:
   PIP_BASE_REQUIREMENTS: |
     pip == 21.3.1; python_version < '3.12'
-    pip == 24.2; python_version >= '3.12'
+    pip == 24.3.1; python_version >= '3.12'
     setuptools == 59.6.0; python_version < '3.12'
-    setuptools == 75.1.0; python_version >= '3.12'
+    setuptools == 75.6.0; python_version >= '3.12'
     wheel == 0.37.1; python_version < '3.12'
-    wheel == 0.44.0; python_version >= '3.12'
+    wheel == 0.45.1; python_version >= '3.12'
   PIP_REQUIREMENTS: |
     # This is a pip requirements file. For documentation see:
     # https://pip.pypa.io/en/stable/reference/requirements-file-format/
@@ -19,21 +19,21 @@ env:
     ipykernel == 6.29.5; python_version >= '3.12'
     ipython == 7.4.0; python_version < '3.11'
     ipython == 8.21.0; python_version == '3.11'
-    ipython == 8.28.0; python_version >= '3.12'
+    ipython == 8.30.0; python_version >= '3.12'
     ipywidgets == 7.4.2; python_version < '3.11'
     ipywidgets == 8.1.1; python_version == '3.11'
     ipywidgets == 8.1.5; python_version >= '3.12'
     metakernel == 0.20.14; python_version < '3.11'
     metakernel == 0.30.2; python_version >= '3.11'
     notebook == 5.7.8; python_version < '3.11'
-    notebook == 7.2.2; python_version >= '3.11'
+    notebook == 7.3.1; python_version >= '3.11'
     scons == 4.1.0; python_version < '3.11'
     scons == 4.8.1; python_version >= '3.11'
 
     requests == 2.27.1; python_version < '3.11'
     requests == 2.32.3; python_version >= '3.11'
     PyYAML == 6.0.2
-    uproot == 5.4.1
+    uproot == 5.5.1
 
     # Mock is included in the Python standard library as unittest.mock from
     # 3.3 onwards.
@@ -42,7 +42,7 @@ env:
 
     psutil == 5.8.0; python_version < '3.10'
     psutil == 5.9.0; python_version == '3.10'
-    psutil == 6.0.0; python_version >= '3.11'
+    psutil == 6.1.0; python_version >= '3.11'
 
     numpy == 1.16.2; python_version < '3.8'
     numpy == 1.19.5; python_version == '3.8'
@@ -67,8 +67,7 @@ env:
     scikit-learn == 0.20.3; python_version < '3.8'
     scikit-learn == 0.24.1; python_version >= '3.8' and python_version < '3.11'
     scikit-learn == 1.3.0; python_version == '3.11'
-    scikit-learn == 1.5.2; python_version == '3.12'
-    scikit-learn; python_version >= '3.13'
+    scikit-learn == 1.6.0; python_version >= '3.12'
 
     sklearn-evaluation == 0.4; python_version < '3.9'
     sklearn-evaluation == 0.5.2; python_version == '3.9'
@@ -79,7 +78,7 @@ env:
     Keras == 2.2.4; python_version < '3.8'
     Keras == 2.4.3; python_version == '3.8'
     Keras == 2.13.1; python_version >= '3.9' and python_version <= '3.11'
-    Keras == 3.6.0; python_version >= '3.12'
+    Keras == 3.7.0; python_version >= '3.12'
 
     tensorflow == 1.13.1; python_version < '3.8'
     tensorflow == 2.4.1; python_version == '3.8'
@@ -94,7 +93,7 @@ env:
     xgboost == 1.3.3; python_version == '3.8'
     xgboost == 1.2.0; python_version >= '3.9' and python_version < '3.11'
     xgboost == 1.7.5; python_version == '3.11'
-    xgboost == 2.1.1; python_version >= '3.12'
+    xgboost == 2.1.3; python_version >= '3.12'
 
     dryable == 1.0.3; python_version < '3.9'
     dryable == 1.0.5; python_version >= '3.9' and python_version <= '3.11'
@@ -107,7 +106,7 @@ env:
     pandas; python_version >= '3.13'
 
     dask[array,dataframe,distributed] == 2023.2.0; python_version < '3.11'
-    dask[array,dataframe,distributed] == 2023.12.1; python_version >= '3.11'
+    dask[array,dataframe,distributed] == 2024.11.2; python_version >= '3.11'
     dask_jobqueue == 0.8.2; python_version < '3.12'
     dask_jobqueue == 0.9.0; python_version >= '3.12'
 
