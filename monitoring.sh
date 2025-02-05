@@ -1,6 +1,6 @@
 package: Monitoring
 version: "%(tag_basename)s"
-tag: v3.18.2a
+tag: v3.19.1
 source: https://github.com/arakotoz/Monitoring
 requires:
   - boost
@@ -13,6 +13,7 @@ build_requires:
   - CMake
   - alibuild-recipe-tools
   - abseil
+  - protobuf
 prepend_path:
   PKG_CONFIG_PATH: "${PROTOBUF_ROOT}/lib/config"
 incremental_recipe: |
@@ -34,10 +35,11 @@ fi
 
 cmake $SOURCEDIR                                              \
       -G Ninja                                                \
-      -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                     \
-      ${BOOST_REVISION:+-DBOOST_ROOT=$BOOST_ROOT}             \
-      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                      \
       ${PROTOBUF_ROOT:+-DProtobuf_ROOT=$PROTOBUF_ROOT}        \
+  ${LIBRDKAFKA_REVISION:+-DRDKAFKA_ROOT="${LIBRDKAFKA_ROOT}"} \
+  -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                         \
+  ${BOOST_REVISION:+-DBOOST_ROOT=$BOOST_ROOT}                 \
+      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                      \
       -DCMAKE_PREFIX_PATH="$ABSEIL_ROOT;$PROTOBUF_ROOT;$GRPC_ROOT;" 
 
 cp ${BUILDDIR}/compile_commands.json ${INSTALLROOT}

@@ -46,9 +46,7 @@ env:
 
     numpy == 1.16.2; python_version < '3.8'
     numpy == 1.19.5; python_version == '3.8'
-    numpy == 1.23.4; python_version >= '3.9' and python_version <= '3.10'
-    numpy == 1.23.5; python_version == '3.11'
-    numpy == 1.26.4; python_version >= '3.12'
+    numpy; python_version >= '3.9'
 
     scipy == 1.2.1; python_version < '3.8'
     scipy == 1.6.1; python_version == '3.8'
@@ -82,11 +80,13 @@ env:
 
     tensorflow == 1.13.1; python_version < '3.8'
     tensorflow == 2.4.1; python_version == '3.8'
-    tensorflow == 2.13.1; python_version >= '3.9' and python_version <= '3.11'
+    # Pinned to 2.15.1 for compatibility with https://github.com/onnx/tensorflow-onnx
+    tensorflow == 2.15.1; python_version >= '3.9' and python_version <= '3.11'
     tensorflow == 2.16.2; python_version >= '3.12'
 
     # See version compatibility table at https://pypi.org/project/tensorflow-metal/
     # only for Mac with Apple silicon or AMD GPUs
+    # Temporarily disabled as it brings validation loss regressions in some cases [O2-5627]
     # tensorflow-metal == 1.0.0; sys_platform == 'darwin' and python_version == '3.11'
 
     xgboost == 0.82; python_version < '3.8'

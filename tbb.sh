@@ -1,7 +1,7 @@
 package: TBB
 version: "v2022.0.0"
 tag: v2022.0.0
-source: https://github.com/oneapi-src/oneTBB/
+source: https://github.com/uxlfoundation/oneTBB
 build_requires:
   - "GCC-Toolchain:(?!osx)"
   - CMake
