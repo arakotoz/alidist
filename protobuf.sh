@@ -1,5 +1,5 @@
 package: protobuf
-version: v29.1
+version: v29.3
 source: https://github.com/protocolbuffers/protobuf
 requires:
   - abseil
