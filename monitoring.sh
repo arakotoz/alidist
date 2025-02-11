@@ -1,24 +1,32 @@
 package: Monitoring
 version: "%(tag_basename)s"
 tag: v3.19.1
+source: https://github.com/arakotoz/Monitoring
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"
   - curl
   - libInfoLogger
+  - protobuf
+  - grpc
 build_requires:
   - CMake
   - alibuild-recipe-tools
+  - abseil
   - protobuf
-source: https://github.com/AliceO2Group/Monitoring
+prepend_path:
+  PKG_CONFIG_PATH: "${PROTOBUF_ROOT}/lib/config"
 incremental_recipe: |
-  make ${JOBS:+-j$JOBS} install
+  cmake --build . -- ${JOBS+-j $JOBS} install
   mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INSTALLROOT/etc/modulefiles
 ---
 #!/bin/bash -ex
 
 case $ARCHITECTURE in
-    osx*) [[ ! $BOOST_ROOT ]] && BOOST_ROOT=$(brew --prefix boost);;
+    osx*)
+      [[ ! $BOOST_ROOT ]] && BOOST_ROOT=$(brew --prefix boost)
+      [[ -z $PROTOBUF_ROOT ]] && PROTOBUF_ROOT=$(brew --prefix protobuf)
+    ;;
 esac
 
 if [[ $ALIBUILD_O2_TESTS ]]; then
@@ -26,14 +34,17 @@ if [[ $ALIBUILD_O2_TESTS ]]; then
 fi
 
 cmake $SOURCEDIR                                              \
+      -G Ninja                                                \
+      ${PROTOBUF_ROOT:+-DProtobuf_ROOT=$PROTOBUF_ROOT}        \
   ${LIBRDKAFKA_REVISION:+-DRDKAFKA_ROOT="${LIBRDKAFKA_ROOT}"} \
   -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                         \
   ${BOOST_REVISION:+-DBOOST_ROOT=$BOOST_ROOT}                 \
-  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON                      \
+      -DCMAKE_PREFIX_PATH="$ABSEIL_ROOT;$PROTOBUF_ROOT;$GRPC_ROOT;" 
 
 cp ${BUILDDIR}/compile_commands.json ${INSTALLROOT}
 
-make ${JOBS+-j $JOBS} install
+cmake --build . -- ${JOBS+-j $JOBS} install
 
 if [[ $ALIBUILD_O2_TESTS ]]; then
   ctest --output-on-failure
