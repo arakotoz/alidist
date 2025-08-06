@@ -4,9 +4,9 @@ env:
   PIP_BASE_REQUIREMENTS: |
     pip < 26.0
     setuptools == 59.6.0; python_version < '3.12'
-    setuptools == 70.0.0; python_version >= '3.12'
+    setuptools == 80.9.0; python_version >= '3.12'
     wheel == 0.37.1; python_version < '3.12'
-    wheel == 0.42.0; python_version >= '3.12'
+    wheel == 0.45.1; python_version >= '3.12'
   PIP_REQUIREMENTS: |
     # This is a pip requirements file. For documentation see:
     # https://pip.pypa.io/en/stable/reference/requirements-file-format/
@@ -14,28 +14,28 @@ env:
     # https://peps.python.org/pep-0508/#environment-markers
 
     ipykernel == 5.1.0; python_version < '3.11'
-    ipykernel == 6.29.1; python_version >= '3.11'
+    ipykernel == 6.30.1; python_version >= '3.11'
     ipython == 7.4.0; python_version < '3.11'
-    ipython == 8.21.0; python_version >= '3.11'
+    ipython == 9.4.0; python_version >= '3.11'
     ipywidgets == 7.4.2; python_version < '3.11'
-    ipywidgets == 8.1.1; python_version >= '3.11'
+    ipywidgets == 8.1.7; python_version >= '3.11'
     metakernel == 0.20.14; python_version < '3.11'
-    metakernel == 0.30.1; python_version >= '3.11'
+    metakernel == 0.30.3; python_version >= '3.11'
     notebook == 5.7.8; python_version < '3.11'
-    notebook == 7.0.7; python_version >= '3.11'
+    notebook == 7.4.5; python_version >= '3.11'
     scons == 4.1.0; python_version < '3.11'
-    scons == 4.6.0.post1; python_version >= '3.11'
+    scons == 4.9.1; python_version >= '3.11'
 
     requests == 2.27.1; python_version < '3.11'
-    requests == 2.31.0; python_version >= '3.11'
-    PyYAML == 6.0.1
-    uproot == 4.1.0
+    requests == 2.32.4; python_version >= '3.11'
+    PyYAML == 6.0.2
+    uproot == 5.6.4
 
-    responses == 0.10.6
+    responses == 0.25.7
 
     psutil == 5.8.0; python_version < '3.10'
     psutil == 5.9.0; python_version == '3.10'
-    psutil == 5.9.5; python_version >= '3.11'
+    psutil == 7.0.0; python_version >= '3.11'
 
     numpy == 1.16.2; python_version < '3.8'
     numpy == 1.19.5; python_version == '3.8'
@@ -43,14 +43,15 @@ env:
 
     scipy == 1.2.1; python_version < '3.8'
     scipy == 1.6.1; python_version == '3.8'
-    scipy == 1.9.3; python_version >= '3.9' and python_version <= '3.10'
+    scipy == 1.9.3; python_version >= '3.9' and python_version < '3.11'
     scipy == 1.10.1; python_version == '3.11'
-    scipy == 1.12.0; python_version == '3.12'
-    scipy == 1.14.1; python_version == '3.13'
+    scipy == 1.14.1; python_version == '3.12'
     scipy; python_version >= '3.13'
 
     Cython == 0.29.16; python_version < '3.8'
-    Cython == 0.29.21; python_version >= '3.8'
+    Cython == 0.29.21; python_version >= '3.8' and python_version < '3.12'
+    Cython == 3.0.11; python_version == '3.12'
+    Cython == 3.1.2; python_version >= '3.13'
 
     seaborn == 0.9.0; python_version < '3.9'
     seaborn == 0.13.2; python_version >= '3.9'
@@ -63,37 +64,46 @@ env:
     sklearn-evaluation == 0.4; python_version < '3.9'
     sklearn-evaluation == 0.5.2; python_version == '3.9'
     sklearn-evaluation == 0.8.1; python_version == '3.10'
-    sklearn-evaluation == 0.12.0; python_version >= '3.11'
+    sklearn-evaluation == 0.12.0; python_version == '3.11'
+    sklearn-evaluation == 0.12.2; python_version >= '3.12'
 
     Keras == 2.2.4; python_version < '3.8'
     Keras == 2.4.3; python_version == '3.8'
-    Keras == 2.15.0; python_version >= '3.9' and python_version <= '3.11'
+    Keras == 2.15.0; python_version >= '3.9' and python_version < '3.12'
+    Keras == 3.11.1; python_version >= '3.12'
 
     tensorflow == 1.13.1; python_version < '3.8'
     tensorflow == 2.4.1; python_version == '3.8'
     # Pinned to 2.15.1 for compatibility with https://github.com/onnx/tensorflow-onnx
-    tensorflow == 2.15.1; python_version >= '3.9' and python_version <= '3.11'
+    tensorflow == 2.15.1; python_version >= '3.9' and python_version < '3.12'
+    tensorflow == 2.19.0; python_version == '3.12'
+    tensorflow; python_version >= '3.13'
 
     # See version compatibility table at https://pypi.org/project/tensorflow-metal/
     # Temporarily disabled as it brings validation loss regressions in some cases [O2-5627]
     # tensorflow-metal == 1.0.0; sys_platform == 'darwin' and python_version == '3.11'
 
     xgboost == 0.82; python_version < '3.8'
-    xgboost == 1.3.3; python_version == '3.8'
-    xgboost == 1.2.0; python_version >= '3.9' and python_version < '3.11'
-    xgboost == 1.7.5; python_version >= '3.11'
+    xgboost == 1.3.3; python_version >= '3.8' and python_version < '3.11'
+    xgboost == 1.7.5; python_version == '3.11'
+    xgboost == 2.1.3; python_version == '3.12'
+    xgboost == 3.0.3; python_version >= '3.13'
 
     dryable == 1.0.3; python_version < '3.9'
-    dryable == 1.0.5; python_version >= '3.9'
+    dryable == 1.0.5; python_version >= '3.9' and python_version < '3.12'
+    dryable == 1.2.0; python_version >= '3.12'
 
     pandas == 0.24.2; python_version < '3.8'
     pandas == 1.2.3; python_version == '3.8'
-    pandas == 1.5.3; python_version >= '3.9' and python_version < '3.13'
+    pandas == 1.5.3; python_version >= '3.9' and python_version < '3.12'
+    pandas == 2.2.3; python_version == '3.12'
     pandas; python_version >= '3.13'
 
     dask[array,dataframe,distributed] == 2023.2.0; python_version < '3.11'
-    dask[array,dataframe,distributed] == 2023.12.1; python_version >= '3.11'
-    dask_jobqueue == 0.8.2
+    dask[array,dataframe,distributed] == 2024.11.2; python_version >= '3.11' and python_version < '3.13'
+    dask[array,dataframe,distributed] == 2025.7.0; python_version >= '3.13'
+    dask_jobqueue == 0.8.2; python_version < '3.12'
+    dask_jobqueue == 0.9.0; python_version >= '3.12'
 
     # readline is needed by alien.py (xjalienfs)
     gnureadline
