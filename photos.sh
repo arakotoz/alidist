@@ -1,6 +1,6 @@
 package: PHOTOS
 version: "%(tag_basename)s"
-tag: "v.3.64"
+tag: "v3.64a"
 source: https://github.com/arakotoz/PHOTOS.git
 requires:
   - HepMC
