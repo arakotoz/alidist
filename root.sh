@@ -4,6 +4,7 @@ tag: "v6-32-06-alice9"
 source: https://github.com/alisw/root.git
 requires:
   - arrow
+  - abseil
   - AliEn-Runtime:(?!.*ppc64)
   - GSL
   - opengl:(?!osx)
@@ -173,7 +174,7 @@ cmake $SOURCEDIR                                                                
       ${PROTOBUF_ROOT:+-DProtobuf_PROTOC_EXECUTABLE=$PROTOBUF_ROOT/bin/protoc}        \
       ${ZLIB_ROOT:+-DZLIB_ROOT=${ZLIB_ROOT}}                                           \
       ${FFTW3_ROOT:+-DFFTW_DIR=${FFTW3_ROOT}}                                          \
-      ${NLOHMANN_JSON_ROOT:+nlohmann_json_DIR=${NLOHMANN_JSON_ROOT}}                   \
+      ${NLOHMANN_JSON_ROOT:+-Dnlohmann_json_DIR=${NLOHMANN_JSON_ROOT}}                   \
       -Dfftw3=ON                                                                       \
       -Dpgsql=OFF                                                                      \
       -Dminuit=ON                                                                      \
