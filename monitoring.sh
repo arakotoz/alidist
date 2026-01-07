@@ -1,6 +1,6 @@
 package: Monitoring
 version: "%(tag_basename)s"
-tag: v3.19.8
+tag: v3.19.9a
 requires:
   - boost
   - "GCC-Toolchain:(?!osx)"
@@ -15,7 +15,7 @@ build_requires:
 prepend_path:
   PKG_CONFIG_PATH: "${PROTOBUF_ROOT}/lib/config"
   - ninja
-source: https://github.com/AliceO2Group/Monitoring
+source: https://github.com/arakotoz/Monitoring
 incremental_recipe: |
   cmake --build . -- ${JOBS:+-j$JOBS} install
   mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INSTALLROOT/etc/modulefiles
