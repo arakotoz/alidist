@@ -12,9 +12,9 @@ build_requires:
   - alibuild-recipe-tools
   - abseil
   - protobuf
+  - ninja
 prepend_path:
   PKG_CONFIG_PATH: "${PROTOBUF_ROOT}/lib/config"
-  - ninja
 source: https://github.com/arakotoz/Monitoring
 incremental_recipe: |
   cmake --build . -- ${JOBS:+-j$JOBS} install
